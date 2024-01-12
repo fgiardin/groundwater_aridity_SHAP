@@ -10,7 +10,7 @@ library(gridExtra) # to use grid.arrange
 library(grid) # to use grid.arrange
 
 USA = 1 # if 0, plots results for the entire world
-percentile = 0 # plot 95th percentile of WTD in dependence plots
+percentile = 0 # plot line corresponding to 95th percentile of WTD in dependence plots of WTD
 
 if (USA) {
   # load results USA (put results to be plotted in directory: data/results_SHAP/USA_PFTgroups/WTD)
