@@ -1,0 +1,1 @@
+contains results of script "data-raw/extract_WTD.R" (WTD from Ying Fan already processed in right format for analysis)

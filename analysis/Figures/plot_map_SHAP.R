@@ -1,4 +1,4 @@
-# plot map of SHAP values of either feature/predictor
+# plot map of SHAP values of each feature/predictor
 
 # load packages
 devtools::load_all(".")

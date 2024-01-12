@@ -1,5 +1,5 @@
 # XGB-SHAP method
-# plot to train PFT-specific XGB models and calculate SHAP values for each model
+# script to train PFT-specific XGB models and calculate SHAP values for each model
 
 devtools::load_all(".")
 library(tidyverse)
@@ -19,12 +19,12 @@ library(rnaturalearth)
 registerDoMC(cores=5) # specify number of cores to run in parallel // 200 for Euler, 5 when local
 
 # load data
-df_raw <- readRDS("data/reprocessed_intmeans/dataframes/df_SHAP.rds")
+df_SHAP <- readRDS("data/reprocessed_intmeans/dataframes/df_SHAP.rds") # see script 2.prep_SHAP.R
 
-df_filtered <- df_raw
+dorun = 1 # run model (1) or load results (0) from previous run (default: load results USA)
 
-dorun = 0 # run model or load results from previous run (default: load results USA)
-
+# if you want SHAP results for the entire world, comment the lines below ("focus on USA")
+# it may be necessary to run on a HPC
 
 # loop model training around PFT groups -----------------------------------
 foreach(namePFT = c("GRA", "CRO", "Forests", "Savannas")) %dopar% {
@@ -46,7 +46,7 @@ if (namePFT == "Forests") {
   filter = namePFT
 }
 
-df <- df_filtered %>%
+df <- df_SHAP %>%
   dplyr::filter(lon > -125, # focus on USA
                 lon < -65,
                 lat < 50,
@@ -56,7 +56,7 @@ df <- df_filtered %>%
     lon, lat, # keep lon/lat to save df train later
     SIF_over_PAR, WTD, P_over_Rn) %>%   # select predictors
   drop_na() %>%
-  mutate(SIF_over_PAR = SIF_over_PAR * 10^5 # scale with other predictors
+  mutate(SIF_over_PAR = SIF_over_PAR * 10^5
          )
 
 

@@ -6,14 +6,14 @@ library(terra)
 library(tidyterra)
 
 # load data
-df_int_raw <- readRDS("data/reprocessed_intmeans/dataframes/df_int_bins.rds") # environmental variables
-df_WTD <- readRDS("data-raw/Fan_data/processed_data/df_WTD.rds") # global map of WTD
+df_int <- readRDS("data/reprocessed_intmeans/dataframes/df_int.rds") # environmental variables (see script 1.calculate_longterm_means.R)
+df_WTD <- readRDS("data/processed_WTD/df_WTD.rds") # map of WTD (see data-raw/extract_WTD.R)
 
 
 vec_PFT <- c("ENF", "EBF", "DNF", "DBF", "MF", "CSH", "OSH", "WSA", "SAV", "GRA", "WET", "CRO") # vector of PFT to consider
 
 # select relevant variables from df_int
-df_int <- df_int_raw %>%
+df_int <- df_int %>%
   dplyr::select(lon,
                 lat,
                 SIF,
@@ -31,12 +31,11 @@ df_int <- df_int_raw %>%
   dplyr::filter(PFT %in% vec_PFT) # exclude water bodies
 
 # merge with dplyr
-df <- df_int %>%
+df_SHAP <- df_int %>%
   left_join(df_WTD,
             by = c("lon", "lat"))
 
-saveRDS(df, "df_SHAP.rds", compress = "xz")
-
+saveRDS(df_SHAP, "df_SHAP.rds", compress = "xz")
 
 
 

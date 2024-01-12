@@ -1,4 +1,4 @@
-# script to calculate the long-term means for all data fast using raster formats via terra packages
+# script to calculate the long-term means for all data fast using raster formats (terra package)
 
 # load packages
 library(LSD)
@@ -262,8 +262,8 @@ saveRDS(df_PFT_2019, "df_PFT_2019.rds", compress = "xz")
 # MERGE ALL -------------------------------------------------
 
 # load dataframes processed as indicated above
-df_SIF <- readRDS("data/reprocessed_intmeans/dataframes/SIF_no_neg/df_SIF.rds") # SIF means calculated without negative values
-df_PAR <- readRDS("data/reprocessed_intmeans/dataframes/SIF_no_neg/df_PAR.rds") # PAR matching SIF without negative values
+df_SIF <- readRDS("data/reprocessed_intmeans/dataframes/df_SIF.rds")
+df_PAR <- readRDS("data/reprocessed_intmeans/dataframes/df_PAR.rds")
 df_PFT_2019 <- readRDS("data/reprocessed_intmeans/dataframes/df_PFT_2019.rds")
 df_SM <- readRDS("data/reprocessed_intmeans/dataframes/df_SM_cvSM.rds")
 df_NETRAD <- readRDS("data/reprocessed_intmeans/dataframes/df_NETRAD.rds")
@@ -343,150 +343,9 @@ df_inter_filter$PFT <-
          '12' = "CRO"
   )
 
+df_int <- df_inter_filter
 
-# BINNING -------------------------------------------------------------
-# bin by xaxis and calculate lower 25% percentile per bin per PFT
-# divide x axis in bins BY PFT
-df_bins <- df_inter_filter %>%
-  # drop_na(PFT) %>%  # remove NAs in PFTs
-  group_by(PFT) %>%
-  mutate(bin = as.numeric(cut_number(P_over_Rn,{n()/1000}))) %>% # dynamic number of bins: equal to number of rows per PFT divided by 1000
-  ungroup()                                                      # aka at least 1000 points per bin
-
-# calculate quartiles and median in every bin
-df_percentiles <- df_bins %>%
-  group_by(PFT, bin) %>%
-  summarise(
-    # SIF
-    perc_SIF_10 = stats::quantile(SIF_over_PAR, probs=0.10, na.rm = TRUE),
-    perc_SIF_20 = stats::quantile(SIF_over_PAR, probs=0.20, na.rm = TRUE),
-    perc_SIF_30 = stats::quantile(SIF_over_PAR, probs=0.30, na.rm = TRUE),
-    perc_SIF_40 = stats::quantile(SIF_over_PAR, probs=0.40, na.rm = TRUE),
-    perc_SIF_50 = stats::quantile(SIF_over_PAR, probs=0.50, na.rm = TRUE),
-    perc_SIF_60 = stats::quantile(SIF_over_PAR, probs=0.60, na.rm = TRUE),
-    perc_SIF_70 = stats::quantile(SIF_over_PAR, probs=0.70, na.rm = TRUE),
-    perc_SIF_80 = stats::quantile(SIF_over_PAR, probs=0.80, na.rm = TRUE),
-    perc_SIF_90 = stats::quantile(SIF_over_PAR, probs=0.90, na.rm = TRUE),
-
-    # SM
-    perc_SM_10 = stats::quantile(SM, probs=0.10, na.rm = TRUE),
-    perc_SM_20 = stats::quantile(SM, probs=0.20, na.rm = TRUE),
-    perc_SM_30 = stats::quantile(SM, probs=0.30, na.rm = TRUE),
-    perc_SM_40 = stats::quantile(SM, probs=0.40, na.rm = TRUE),
-    perc_SM_50 = stats::quantile(SM, probs=0.50, na.rm = TRUE),
-    perc_SM_60 = stats::quantile(SM, probs=0.60, na.rm = TRUE),
-    perc_SM_70 = stats::quantile(SM, probs=0.70, na.rm = TRUE),
-    perc_SM_80 = stats::quantile(SM, probs=0.80, na.rm = TRUE),
-    perc_SM_90 = stats::quantile(SM, probs=0.90, na.rm = TRUE),
-
-    # cvSM
-    perc_cvSM_10 = stats::quantile(CV_SM, probs=0.10, na.rm = TRUE),
-    perc_cvSM_20 = stats::quantile(CV_SM, probs=0.20, na.rm = TRUE),
-    perc_cvSM_30 = stats::quantile(CV_SM, probs=0.30, na.rm = TRUE),
-    perc_cvSM_40 = stats::quantile(CV_SM, probs=0.40, na.rm = TRUE),
-    perc_cvSM_50 = stats::quantile(CV_SM, probs=0.50, na.rm = TRUE),
-    perc_cvSM_60 = stats::quantile(CV_SM, probs=0.60, na.rm = TRUE),
-    perc_cvSM_70 = stats::quantile(CV_SM, probs=0.70, na.rm = TRUE),
-    perc_cvSM_80 = stats::quantile(CV_SM, probs=0.80, na.rm = TRUE),
-    perc_cvSM_90 = stats::quantile(CV_SM, probs=0.90, na.rm = TRUE)
-  ) %>%
-  ungroup()
-
-
-# merge two df and flag bin in column
-df_int <- df_bins %>%
-  left_join(df_percentiles, by = c("bin", "PFT")) %>%
-  mutate(
-    # create flag to indicate to which percentile SIF belongs
-    flag_SIF = if_else(
-      SIF_over_PAR < perc_SIF_10,
-      10,
-      if_else(
-        SIF_over_PAR < perc_SIF_20,
-        20,
-        if_else(
-          SIF_over_PAR < perc_SIF_30,
-          30,
-          if_else(
-            SIF_over_PAR < perc_SIF_40,
-            40,
-            if_else(
-              SIF_over_PAR < perc_SIF_50,
-              50,
-              if_else(
-                SIF_over_PAR < perc_SIF_60,
-                60,
-                if_else(
-                  SIF_over_PAR < perc_SIF_70,
-                  70,
-                  if_else(
-                    SIF_over_PAR < perc_SIF_80,
-                    80,
-                    if_else(
-                      SIF_over_PAR < perc_SIF_90,
-                      90,
-                      100)))))))))) %>%
-  mutate(
-    # create flag to indicate to which percentile SIF belongs
-    flag_SM = if_else(
-      SM < perc_SM_10,
-      10,
-      if_else(
-        SM < perc_SM_20,
-        20,
-        if_else(
-          SM < perc_SM_30,
-          30,
-          if_else(
-            SM < perc_SM_40,
-            40,
-            if_else(
-              SM < perc_SM_50,
-              50,
-              if_else(
-                SM < perc_SM_60,
-                60,
-                if_else(
-                  SM < perc_SM_70,
-                  70,
-                  if_else(
-                    SM < perc_SM_80,
-                    80,
-                    if_else(
-                      SM < perc_SM_90,
-                      90,
-                      100)))))))))) %>%
-  mutate(
-    # create flag to indicate to which percentile SIF belongs
-    flag_cv_SM = if_else(
-      CV_SM < perc_cvSM_10,
-      10,
-      if_else(
-        CV_SM < perc_cvSM_20,
-        20,
-        if_else(
-          CV_SM < perc_cvSM_30,
-          30,
-          if_else(
-            CV_SM < perc_cvSM_40,
-            40,
-            if_else(
-              CV_SM < perc_cvSM_50,
-              50,
-              if_else(
-                CV_SM < perc_cvSM_60,
-                60,
-                if_else(
-                  CV_SM < perc_cvSM_70,
-                  70,
-                  if_else(
-                    CV_SM < perc_cvSM_80,
-                    80,
-                    if_else(
-                      CV_SM < perc_cvSM_90,
-                      90,
-                      100))))))))))
-saveRDS(df_int, "df_int_bins.rds", compress = "xz") # XXX change
+saveRDS(df_int, "df_int.rds", compress = "xz") # XXX change
 
 
 beep(sound = 2) # beep when it's done

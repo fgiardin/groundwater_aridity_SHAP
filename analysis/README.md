@@ -1,9 +1,18 @@
-To reproduce the analysis, run the following scripts in order. Scripts 1 and 2 need to be run on a HPC cluster (we used Euler from ETHZ Zürich).
+To reproduce the analysis, run the following scripts in order:
 
-* **How_to_run_scripts_on_Euler.md**: Instructions to run scripts 1 and 2 on Euler.
+* **1.calculate_longterm_means.R**: Calculates the long-term means for all data fast using raster formats.
 
-* **1.data_screening_euler.R**: Prepares FLUXNET2015 raw data in the right format for the deep learning model.
+* **2.prep_SHAP.R**: Merge WTD and SIF variables into one dataframe to train XGB models and perform SHAP analysis.
 
-* **2.run_ML_model_euler.R**: Runs the deep learning model for every site and saves model outputs.
+* **3.calculate_SHAP.R**: Trains PFT-specific XGB models and calculate SHAP values for each model.
 
-* **3.summary_plots.R**: Generates results on the performance of the model (Fig. 2). It divides the results in groups and prints the grouping statistics (Fig. 4). It also prints the fET vs CWD multi-panel figure (Fig. 5). It also produces Supplementary Figs 1-2).
+### `Figures`
+Folder containing the scripts to generate all figures. 
+
+* **plot_Fig_1.R**
+* **plot_map_variables.R**: plots maps of the main variables used in this study
+* **plot_summary_SHAP.R**: loads SHAP results and plots nice summary plots SHAP (bee-swarm and dependence plots)
+* **plot_map_SHAP.R**: plots map of SHAP values of each feature/predictor
+* **plot_crosscorr_scatters.R**: plot the cross-correlation between variables used in the XGB models (supplementary figure)
+* Other figures in supplementary materials were plotted using the scripts above with other settings and different data (see for instance plot_summary_SHAP.R)
+
