@@ -18,7 +18,7 @@ registerDoMC(cores=5) # specify number of cores to run code in parallel (~200 fo
 #InputFolder <- "/cluster/work/climate/fgiardina/" # for Euler
 InputFolder <- "data-raw/TROPOMI/" # drop NetCDF files of all variables in this folder (very big dataframes; not uploaded to Git)
 
-# if you don't have all the raw NetCDFs files, you can directly skip to "merge all variables"
+# if you don't have all the raw NetCDFs files, you can directly skip to "merge all"
 # and use intermediate files available in this repo to continue the analysis
 
 # SIF ---------------------------------------------------------------------
@@ -259,11 +259,11 @@ df_PFT_2019 <- df_PFT %>%
 names(df_PFT_2019) <- c("lon", "lat", "PFT")
 saveRDS(df_PFT_2019, "df_PFT_2019.rds", compress = "xz")
 
-# merge all variables -------------------------------------------------
+# MERGE ALL -------------------------------------------------
 
 # load dataframes processed as indicated above
-df_SIF <- readRDS("data/reprocessed_intmeans/dataframes/SIF_no_neg/df_SIF.rds") # SIF means calculated with negative values
-df_PAR <- readRDS("data/reprocessed_intmeans/dataframes/SIF_no_neg/df_PAR.rds") # PAR matching SIF with negative values
+df_SIF <- readRDS("data/reprocessed_intmeans/dataframes/SIF_no_neg/df_SIF.rds") # SIF means calculated without negative values
+df_PAR <- readRDS("data/reprocessed_intmeans/dataframes/SIF_no_neg/df_PAR.rds") # PAR matching SIF without negative values
 df_PFT_2019 <- readRDS("data/reprocessed_intmeans/dataframes/df_PFT_2019.rds")
 df_SM <- readRDS("data/reprocessed_intmeans/dataframes/df_SM_cvSM.rds")
 df_NETRAD <- readRDS("data/reprocessed_intmeans/dataframes/df_NETRAD.rds")
