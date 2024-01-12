@@ -1,0 +1,2 @@
+load("/Users/fgiardina/EF_vs_SM/data-raw/TROPOMI/SIF_df.rds")
+load("/Users/fgiardina/EF_vs_SM/data-raw/TROPOMI/SIF_PAR_yearly_means.rds")
