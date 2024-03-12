@@ -9,7 +9,7 @@ Understanding the role of groundwater in regulating photosynthesis is key in lan
 First, clone this repo to your local computer:
 
 ```
-git clone https://github.com/computationales/fET
+git clone [https://github.com/computationales/fET](https://github.com/fgiardin/groundwater_aridity_SHAP/)
 ```
 
 To reproduce the analysis and figures, you can follow the steps described in the `analysis` folder and its 'README.md' file. To avoid overwriting the dataframes already loaded in this repo, the scripts contained in the `analysis` folder will save their output in the main directory of the project (aka the directory where this README also is). 
