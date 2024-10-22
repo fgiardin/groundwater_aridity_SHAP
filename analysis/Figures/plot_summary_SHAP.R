@@ -38,7 +38,7 @@ common_theme <-  theme(legend.position = "bottom",
                        legend.title = element_text(size = 16), legend.text = element_text(size = 14),
                        axis.title.y = element_text(size = 16), axis.text.y = element_text(size = 14),
                        axis.title.x = element_text(size = 16, vjust = -1), axis.text.x = element_text(size = 12)
-                       )
+)
 
 
 # Define custom labels
@@ -49,7 +49,7 @@ a <- ggplot(data = p_forests) +
   coord_flip(ylim = c(-1, 1)) +
   geom_hline(yintercept = 0, alpha = 0.5) +
   ggforce::geom_sina(aes(x = variable, y = value, color = stdfvalue),
-  method = "counts", maxwidth = 0.7, alpha = 0.7) +
+                     method = "counts", maxwidth = 0.7, alpha = 0.7) +
   geom_text(data = unique(p_forests[, c("variable", "mean_value")]),
             aes(x = variable, y = -Inf, label = sprintf("%.3f", mean_value)),
             size = 4, alpha = 0.7, hjust = -0.2, fontface = "bold") +
@@ -134,11 +134,11 @@ d <- ggplot(data = p_grasslands) +
 
 # combine graphs
 fig <- ggarrange(a, b, c, d,
-          labels = "auto",
-          ncol = 2, nrow = 2,
-          common.legend = TRUE, # have just one common legend
-          legend="bottom"
-          )
+                 labels = "auto",
+                 ncol = 2, nrow = 2,
+                 common.legend = TRUE, # have just one common legend
+                 legend="bottom"
+)
 ggsave("bee_swarm.png", plot = fig, path = "./", width = 10.8, height = 5.5, dpi = 600)
 
 # 7.2
@@ -175,15 +175,15 @@ common_theme <- theme(
   axis.title=element_text(size = 14),
   legend.position="none",
   plot.tag = element_text(face = "bold", size = 14) # control the figure label (a,b,c,d)
-  )
+)
 
 body(shap.plot.dependence)
 
 a <- shap.plot.dependence(data_long = shap_forests,
-                            smooth = F,
-                            x = 'WTD', # real values to display
-                            y = 'WTD', # shap values to display (in this case: dependence plot of WTD, so both x and y are WTD)
-                            color_feature = 'P_over_Rn') +
+                          smooth = F,
+                          x = 'WTD', # real values to display
+                          y = 'WTD', # shap values to display (in this case: dependence plot of WTD, so both x and y are WTD)
+                          color_feature = 'P_over_Rn') +
   geom_hline(aes(yintercept=0), alpha = 0.3) +
   ggtitle("Forests") +
   common_theme +
@@ -192,15 +192,15 @@ a <- shap.plot.dependence(data_long = shap_forests,
                      breaks = c(-200, -175, -150, -125, -100, -75, -50, -25, 0)
   ) +
   scale_y_continuous(
-                     limits = c(-0.8, 0.4),
-                     breaks = c(-0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4)
+    limits = c(-0.8, 0.4),
+    breaks = c(-0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4)
   ) +
   labs(color = expression(paste("λP/R"[n], " (", "-", ")"))) +
   scale_color_gradient(low = "#008BFB", high = "#ff0051",
                        guide = guide_colorbar(barwidth = 10, barheight = 0.3)) +
   labs(tag = 'a')
-  # labs(color = expression(atop("P/R"[n]~"(-)", "(Feature value)"))) +
-  # labs(color = paste0("Hello", "\n", "(Feature value)"))
+# labs(color = expression(atop("P/R"[n]~"(-)", "(Feature value)"))) +
+# labs(color = paste0("Hello", "\n", "(Feature value)"))
 
 b <- shap.plot.dependence(data_long = shap_savannas,
                           smooth = F,
@@ -236,8 +236,8 @@ c <- shap.plot.dependence(data_long = shap_grasslands,
                      breaks = c(-200, -175, -150, -125, -100, -75, -50, -25, 0)
   ) +
   scale_y_continuous(
-                     limits = c(-0.8, 0.4),
-                     breaks = c(-0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4)
+    limits = c(-0.8, 0.4),
+    breaks = c(-0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4)
   ) +
   labs(color = expression(paste("λP/R"[n], " (", "-", ")"))) +
   scale_color_gradient(low = "#008BFB", high = "#ff0051",
@@ -282,10 +282,10 @@ d1 <- ggExtra::ggMarginal(d, type = "histogram", margins = "x", size = 15, col =
 
 # re-plot just for legend
 ciaone <- shap.plot.dependence(data_long = shap_forests,
-                          smooth = F,
-                          x = 'WTD',
-                          y = 'WTD',
-                          color_feature = 'P_over_Rn') +
+                               smooth = F,
+                               x = 'WTD',
+                               y = 'WTD',
+                               color_feature = 'P_over_Rn') +
   geom_hline(aes(yintercept=0), alpha = 0.3) +
   ggtitle("Forests") +
   scale_x_continuous(name = element_blank(),
@@ -456,10 +456,10 @@ d1 <- ggExtra::ggMarginal(d, type = "histogram", margins = "x", size = 15, col =
 
 # re-plot just for legend (without common_theme, so that legend gets plotted)
 ciaone <- shap.plot.dependence(data_long = shap_forests,
-                          smooth = F,
-                          x = 'P_over_Rn', # real values to display
-                          y = 'P_over_Rn', # shap values to display
-                          color_feature = 'WTD') +
+                               smooth = F,
+                               x = 'P_over_Rn', # real values to display
+                               y = 'P_over_Rn', # shap values to display
+                               color_feature = 'WTD') +
   geom_hline(aes(yintercept=0), alpha = 0.3) +
   ggtitle("Forests") +
   scale_x_continuous(name = element_blank(),
@@ -491,8 +491,3 @@ arranged_plot <- grid.arrange(arrangeGrob(a1, b1, c1, d1, ncol = 2),
 png(filename = "./dependence_P_Rn.png", width = 10, height = 8, units = "in", res = 600) # Open a PNG device
 grid.draw(arranged_plot)  # plot
 dev.off() # Turn off device and save
-
-
-
-
-

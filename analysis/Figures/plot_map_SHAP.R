@@ -147,7 +147,6 @@ labels <- lapply(breaks, function(x) {
   }
 })
 
-
 if (plot_variable == "WTD") {
   title_text <- "SHAP values for WTD"
   legend_name <- "SHAP value for WTD  "

@@ -19,7 +19,20 @@ library(rnaturalearth)
 registerDoMC(cores=5) # specify number of cores to run in parallel // 200 for Euler, 5 when local
 
 # load data
-df_SHAP <- readRDS("data/reprocessed_intmeans/dataframes/df_SHAP.rds") # see script 2.prep_SHAP.R
+# df_SHAP <- readRDS("data/reprocessed_intmeans/dataframes/df_SHAP.rds") # see script 2.prep_SHAP.R
+main <- readRDS("data/main.rds")
+
+df_SHAP <- main %>%
+  dplyr::select(lon, lat, SIF_over_PAR, P_over_Rn, elevation, WTD_globgm, WTD_Fan, land_cover_num, veg_flag) %>%
+  dplyr::filter(veg_flag == 1) %>%
+  dplyr::select(-veg_flag) %>%
+  mutate( # re-code vegetation groups
+    PFT = ifelse(land_cover_num %in% c(50,60,61,62,70,71,72,80,81,82,90,160,170), "Forests",
+                 ifelse(land_cover_num %in% c(120,121,122,180), "Savannas",
+                        ifelse(land_cover_num %in% c(130), "Grasslands",
+                               ifelse(land_cover_num %in% c(10,11,12), "Croplands",
+                                      "Other")))))
+
 
 dorun = 1 # run model (1) or load results (0) from previous run (default: load results USA)
 
@@ -38,13 +51,22 @@ foreach(namePFT = c("GRA", "CRO", "Forests", "Savannas")) %dopar% {
   dir_name = sprintf("./%s", namePFT)
   dir.create(dir_name)
 
-if (namePFT == "Forests") {
-  filter = c("DBF", "EBF", "ENF", "MF")
-} else if (namePFT == "Savannas") {
-  filter = c("SAV", "WSA", "CSH", "OSH")
-} else {
-  filter = namePFT
-}
+# if (namePFT == "Forests") {
+#   filter = c("DBF", "EBF", "ENF", "MF")
+# } else if (namePFT == "Savannas") {
+#   filter = c("SAV", "WSA", "CSH", "OSH")
+# } else {
+#   filter = namePFT
+# }
+
+  # adapted to main.rds
+  if (namePFT == "CRO") {
+    filter = "Croplands"
+  } else if (namePFT == "GRA") {
+    filter = "Grasslands"
+  } else {
+    filter = namePFT
+  }
 
 df <- df_SHAP %>%
   dplyr::filter(lon > -125, # focus on USA
@@ -52,9 +74,10 @@ df <- df_SHAP %>%
                 lat < 50,
                 lat > 24) %>%
   dplyr::filter(PFT %in% filter) %>%   # select PFT
+  dplyr::rename(WTD = WTD_Fan) %>% # decide which WTD dataset to use: WTD_Fan or WTD_globgm
   dplyr::select(
     lon, lat, # keep lon/lat to save df train later
-    SIF_over_PAR, WTD, P_over_Rn) %>%   # select predictors
+    SIF_over_PAR, WTD, P_over_Rn, elevation) %>%   # select predictors
   drop_na() %>%
   mutate(SIF_over_PAR = SIF_over_PAR * 10^5
          )
@@ -82,7 +105,7 @@ saveRDS(df, path, compress = "xz") # save shap dataframe
 path = sprintf("%s/df_train.rds", dir_name)
 saveRDS(train, path, compress = "xz") # save shap dataframe
 
-# drop lon/lat to train the model
+# drop lon/lat columns to train the model
 df <- df %>% dplyr::select(-lon,-lat,-ID)
 train <- train %>% dplyr::select(-lon,-lat,-ID)
 test <- test %>% dplyr::select(-lon,-lat)
@@ -106,7 +129,7 @@ if (dorun) {
     colsample_bytree = 1
   )
 
-  # # computationally intensive HP tuning tried on HPC --> less or equally effective as the one above
+  # # computationally intensive HP tuning tried on HPC --> less or equally effective as the simpler one above
   # gbmGrid <-  expand.grid(
   #   max_depth = c(3, 6, 9, 15), # limits how deep each tree can grow /// default: 6
   #   nrounds = c(100, 500, 1500, 2000, 5000),    # number of decision trees to be boosted /// default: 100
@@ -150,9 +173,9 @@ if (dorun) {
   # scatter plot / fit of XGB model
   filename1 = sprintf("%s/fit_XGB_test.png", dir_name)
   filename2 = sprintf("%s/fit_XGB_train.png", dir_name)
-  scatterheat(out_test, "test_y", "pred_y", "fit of XGB model - test", filename1)
+  scatterheat(out_test, "test_y", "pred_y", "fit of XGB model - test", 0)
   ggsave(filename1, path = "./", width = 4, height = 4, dpi = 600)
-  scatterheat(out_train, "train_y", "pred_y_train", "fit of XGB model - train", filename2)
+  scatterheat(out_train, "train_y", "pred_y_train", "fit of XGB model - train", 0)
   ggsave(filename2, path = "./", width = 4, height = 4, dpi = 600)
 
 } else {

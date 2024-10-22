@@ -1,5 +1,9 @@
 # script to calculate the long-term means for all data fast using raster formats (terra package)
 
+# to avoid all the processing time, you can directly skip to "MERGE ALL"
+# this will produce the final "df_int.rds" file from the outputs of each section below
+# (df_int.rds is too big to upload on GitHub)
+
 # load packages
 library(LSD)
 devtools::load_all(".")
