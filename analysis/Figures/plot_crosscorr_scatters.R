@@ -2,20 +2,17 @@
 
 devtools::load_all(".")
 library(tidyverse)
-library(xgboost)
-library(caret)
-library(SHAPforxgboost)
-library(rsample)
-library(LSD)
-library(beepr)
-library(doMC) # to run models in parallel
-library(sf)
-library(maps)
-library(data.table)
-library(rnaturalearth)
+library(doParallel) # to run models in parallel
 library(ggpubr)
+source("R/scatterheat.R")
 
-registerDoMC(cores=5) # specify number of cores to run in parallel // 200 for Euler, 5 when local
+# registerDoMC(cores=5) # specify number of cores to run in parallel // 200 for Euler, 5 when local
+
+# Set up parallel backend
+numCores <- 5
+cl <- makeCluster(numCores)
+registerDoParallel(cl)
+
 
 # load data
 df_raw <- readRDS("data/reprocessed_intmeans/dataframes/df_SHAP.rds") # SIF means calculated with negative values
@@ -28,6 +25,7 @@ results <- foreach(namePFT = c("GRA", "CRO", "Forests", "Savannas")) %dopar% {
   # # option: run locally by specifying PFT:
   # namePFT = "Forests" # GRA / CRO / Forests / Savannas
 
+  library(tidyverse)
   set.seed(23) # set seed for reproducibility
 
   # create directory to save results
@@ -84,6 +82,9 @@ results <- foreach(namePFT = c("GRA", "CRO", "Forests", "Savannas")) %dopar% {
   return(list(a, b, c))
 
 }
+
+# Stop the cluster after the loop
+stopCluster(cl)
 
 # Flatten the results list to get all plots in a single list
 all_plots <- do.call("c", results)

@@ -10,27 +10,27 @@ std1 <- function(x) {
   return ((x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE)))
 }
 
-model_training_folder <- '/Users/jiangongliu/Desktop/5_WTD_Aridity/new_dataframe/model_training_elevation_US_Fan/'
+model_training_folder <- 'data/jiangong/model_training_elevation_US_Fan/'
 
 # forest
 df_forest <- readRDS(paste0(model_training_folder, "cshap_long_forests.rds"))
 ori_forest <- as.data.frame(df_forest$x_test)
-shap_forest <- df_forest$dt %>% 
-  mutate(Aridity_rfvalue = ori_forest$WTD, 
-         Aridity_rfvalue = ori_forest$Aridity, 
+shap_forest <- df_forest$dt %>%
+  mutate(WTD_rfvalue = ori_forest$WTD,
+         Aridity_rfvalue = ori_forest$Aridity,
          Elevation_rfvalue = ori_forest$Elevation)
 # Step 1: standardization
-shap_forest$WTD_stdfvalue <- std1(shap_forest$Aridity_rfvalue)
+shap_forest$WTD_stdfvalue <- std1(shap_forest$WTD_rfvalue)
 shap_forest$Aridity_stdfvalue <- std1(shap_forest$Aridity_rfvalue)
 shap_forest$Elevation_stdfvalue <- std1(shap_forest$Elevation_rfvalue)
 # Step 2: contribution calculation
 shap_forest$WTD_mean_value <- mean(abs(shap_forest$WTD), na.rm = TRUE)
 shap_forest$Aridity_mean_value <- mean(abs(shap_forest$Aridity), na.rm = TRUE)
 shap_forest$Elevation_mean_value <- mean(abs(shap_forest$Elevation), na.rm = TRUE)
-shap_long_forest <- melt(shap_forest, 
+shap_long_forest <- melt(shap_forest,
                          measure.vars = list(
                            c("WTD", "Aridity", "Elevation"),        # SHAP values
-                           c("Aridity_rfvalue", "Aridity_rfvalue", "Elevation_rfvalue"),  # rfvalue
+                           c("WTD_rfvalue", "Aridity_rfvalue", "Elevation_rfvalue"),  # rfvalue
                            c("WTD_stdfvalue", "Aridity_stdfvalue", "Elevation_stdfvalue"),  # stdfvalue
                            c("WTD_mean_value", "Aridity_mean_value", "Elevation_mean_value")  # mean_value
                          ),
@@ -41,22 +41,22 @@ shap_long_forest[, variable := factor(variable, labels = c("WTD", "Aridity", "El
 # savannas_and_scrublands
 df_savannas_and_scrublands <- readRDS(paste0(model_training_folder, "cshap_long_savannas_and_scrublands.rds"))
 ori_savannas_and_scrublands <- as.data.frame(df_savannas_and_scrublands$x_test)
-shap_savannas_and_scrublands <- df_savannas_and_scrublands$dt %>% 
-  mutate(Aridity_rfvalue = ori_savannas_and_scrublands$WTD, 
-         Aridity_rfvalue = ori_savannas_and_scrublands$Aridity, 
+shap_savannas_and_scrublands <- df_savannas_and_scrublands$dt %>%
+  mutate(WTD_rfvalue = ori_savannas_and_scrublands$WTD,
+         Aridity_rfvalue = ori_savannas_and_scrublands$Aridity,
          Elevation_rfvalue = ori_savannas_and_scrublands$Elevation)
 # Step 1: standardization
-shap_savannas_and_scrublands$WTD_stdfvalue <- std1(shap_savannas_and_scrublands$Aridity_rfvalue)
+shap_savannas_and_scrublands$WTD_stdfvalue <- std1(shap_savannas_and_scrublands$WTD_rfvalue)
 shap_savannas_and_scrublands$Aridity_stdfvalue <- std1(shap_savannas_and_scrublands$Aridity_rfvalue)
 shap_savannas_and_scrublands$Elevation_stdfvalue <- std1(shap_savannas_and_scrublands$Elevation_rfvalue)
 # Step 2: contribution calculation
 shap_savannas_and_scrublands$WTD_mean_value <- mean(abs(shap_savannas_and_scrublands$WTD), na.rm = TRUE)
 shap_savannas_and_scrublands$Aridity_mean_value <- mean(abs(shap_savannas_and_scrublands$Aridity), na.rm = TRUE)
 shap_savannas_and_scrublands$Elevation_mean_value <- mean(abs(shap_savannas_and_scrublands$Elevation), na.rm = TRUE)
-shap_long_dry <- melt(shap_savannas_and_scrublands, 
+shap_long_dry <- melt(shap_savannas_and_scrublands,
                       measure.vars = list(
                         c("WTD", "Aridity", "Elevation"),        # SHAP values
-                        c("Aridity_rfvalue", "Aridity_rfvalue", "Elevation_rfvalue"),  # rfvalue
+                        c("WTD_rfvalue", "Aridity_rfvalue", "Elevation_rfvalue"),  # rfvalue
                         c("WTD_stdfvalue", "Aridity_stdfvalue", "Elevation_stdfvalue"),  # stdfvalue
                         c("WTD_mean_value", "Aridity_mean_value", "Elevation_mean_value")  # mean_value
                       ),
@@ -67,22 +67,22 @@ shap_long_dry[, variable := factor(variable, labels = c("WTD", "Aridity", "Eleva
 # cropland
 df_cropland <- readRDS(paste0(model_training_folder, "cshap_long_croplands.rds"))
 ori_cropland <- as.data.frame(df_cropland$x_test)
-shap_cropland <- df_cropland$dt %>% 
-  mutate(Aridity_rfvalue = ori_cropland$WTD, 
-         Aridity_rfvalue = ori_cropland$Aridity, 
+shap_cropland <- df_cropland$dt %>%
+  mutate(WTD_rfvalue = ori_cropland$WTD,
+         Aridity_rfvalue = ori_cropland$Aridity,
          Elevation_rfvalue = ori_cropland$Elevation)
 # Step 1: standardization
-shap_cropland$WTD_stdfvalue <- std1(shap_cropland$Aridity_rfvalue)
+shap_cropland$WTD_stdfvalue <- std1(shap_cropland$WTD_rfvalue)
 shap_cropland$Aridity_stdfvalue <- std1(shap_cropland$Aridity_rfvalue)
 shap_cropland$Elevation_stdfvalue <- std1(shap_cropland$Elevation_rfvalue)
 # Step 2: contribution calculation
 shap_cropland$WTD_mean_value <- mean(abs(shap_cropland$WTD), na.rm = TRUE)
 shap_cropland$Aridity_mean_value <- mean(abs(shap_cropland$Aridity), na.rm = TRUE)
 shap_cropland$Elevation_mean_value <- mean(abs(shap_cropland$Elevation), na.rm = TRUE)
-shap_long_crop <- melt(shap_cropland, 
+shap_long_crop <- melt(shap_cropland,
                        measure.vars = list(
                          c("WTD", "Aridity", "Elevation"),        # SHAP values
-                         c("Aridity_rfvalue", "Aridity_rfvalue", "Elevation_rfvalue"),  # rfvalue
+                         c("WTD_rfvalue", "Aridity_rfvalue", "Elevation_rfvalue"),  # rfvalue
                          c("WTD_stdfvalue", "Aridity_stdfvalue", "Elevation_stdfvalue"),  # stdfvalue
                          c("WTD_mean_value", "Aridity_mean_value", "Elevation_mean_value")  # mean_value
                        ),
@@ -93,22 +93,22 @@ shap_long_crop[, variable := factor(variable, labels = c("WTD", "Aridity", "Elev
 # grassland
 df_grassland <- readRDS(paste0(model_training_folder, "cshap_long_grasslands.rds"))
 ori_grassland <- as.data.frame(df_grassland$x_test)
-shap_grassland <- df_grassland$dt %>% 
-  mutate(Aridity_rfvalue = ori_grassland$WTD, 
-         Aridity_rfvalue = ori_grassland$Aridity, 
+shap_grassland <- df_grassland$dt %>%
+  mutate(WTD_rfvalue = ori_grassland$WTD,
+         Aridity_rfvalue = ori_grassland$Aridity,
          Elevation_rfvalue = ori_grassland$Elevation)
 # Step 1: standardization
-shap_grassland$WTD_stdfvalue <- std1(shap_grassland$Aridity_rfvalue)
+shap_grassland$WTD_stdfvalue <- std1(shap_grassland$WTD_rfvalue)
 shap_grassland$Aridity_stdfvalue <- std1(shap_grassland$Aridity_rfvalue)
 shap_grassland$Elevation_stdfvalue <- std1(shap_grassland$Elevation_rfvalue)
 # Step 2: contribution calculation
 shap_grassland$WTD_mean_value <- mean(abs(shap_grassland$WTD), na.rm = TRUE)
 shap_grassland$Aridity_mean_value <- mean(abs(shap_grassland$Aridity), na.rm = TRUE)
 shap_grassland$Elevation_mean_value <- mean(abs(shap_grassland$Elevation), na.rm = TRUE)
-shap_long_grass <- melt(shap_grassland, 
+shap_long_grass <- melt(shap_grassland,
                         measure.vars = list(
                           c("WTD", "Aridity", "Elevation"),        # SHAP values
-                          c("Aridity_rfvalue", "Aridity_rfvalue", "Elevation_rfvalue"),  # rfvalue
+                          c("WTD_rfvalue", "Aridity_rfvalue", "Elevation_rfvalue"),  # rfvalue
                           c("WTD_stdfvalue", "Aridity_stdfvalue", "Elevation_stdfvalue"),  # stdfvalue
                           c("WTD_mean_value", "Aridity_mean_value", "Elevation_mean_value")  # mean_value
                         ),
@@ -118,15 +118,16 @@ shap_long_grass[, variable := factor(variable, labels = c("WTD", "Aridity", "Ele
 
 # define common theme
 common_theme <-  theme(legend.position = "bottom",
-                       plot.title = element_text(hjust = 0.5, size = 14),
-                       panel.grid.major.x = element_blank(),
-                       panel.grid.minor.x = element_blank(),
+                       plot.title = element_text(hjust = 0.5, size = 16),
+                       panel.grid.major = element_blank(),  # Remove major gridlines
+                       panel.grid.minor = element_blank(),  # Remove minor gridlines
                        legend.title = element_text(size = 14), legend.text = element_text(size = 12),
                        axis.title.y = element_text(size = 14), axis.text.y = element_text(size = 12),
                        axis.title.x = element_text(size = 14, vjust = -1), axis.text.x = element_text(size = 12),
                        plot.margin = unit(c(5, 5, 5, 5), "points")
 )
 
+# function to extract legend from ggplot
 g_legend<-function(a.gplot){
   tmp <- ggplot_gtable(ggplot_build(a.gplot))
   leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
@@ -134,21 +135,30 @@ g_legend<-function(a.gplot){
   return(legend)}
 
 a1 <- ggplot(shap_forest, aes(Aridity_rfvalue, Aridity)) +
+  geom_hline(yintercept = 0, color = "grey") +
   geom_point(aes(color = WTD_rfvalue), alpha = 0.35, size = 0.3) +
-  scale_color_gradient(low = "#FFCC33", high = "#0C2C84",
+  scale_color_gradient(low = "#1518FD", high = "#FE0104",
                        limits = c(-150,0),  # Set the range for the legend
                        breaks = seq(-150,0,by = 30)) +
   labs(x = "",
-       y = expression(atop('Shapley values for', 'Aridity (sr'^-1 * 'nm'^-1 * ")")),
-       color = "WTD") +
-  scale_x_continuous(limits = c(0,3)) +
+       y = expression(paste("Shapley values for ", "λP/R"[n], " (", "-", ")   ")),
+       color = "WTD (m)   ") +
+  scale_x_continuous(limits = c(0, 2.7),
+                     breaks = c(0, 0.5, 1, 1.5, 2, 2.5),
+                     expand = c(0, 0) # remove space below zero
+                     ) +
+  scale_y_continuous(limits = c(-1.4, 1.9),
+                     breaks = c(-1, -0.5, 0, 0.5, 1, 1.5)
+  ) +
   theme_bw() +
   common_theme +
-  #theme(legend.key.width = unit(2.5, "cm"))
-  theme(legend.position="none")
+  theme(legend.key.width = unit(1.62, "cm"),
+        legend.key.height = unit(0.2, "cm")
+  )
 
-mylegend<-arrangeGrob(g_legend(a1))
-
+# extract legend for final graph and remove from this panel
+mylegend <- arrangeGrob(g_legend(a1))
+a1 <- a1 + theme(legend.position="none")
 
 a2 <- ggplot(shap_forest, aes(x = Aridity_rfvalue)) +
   geom_density(fill = "grey", alpha = 0.7, color = NA) +
@@ -167,14 +177,21 @@ a <- combined_plot <- plot_grid(
 
 #shap_savannas_and_scrublands
 b1 <- ggplot(shap_savannas_and_scrublands, aes(Aridity_rfvalue, Aridity)) +
+  geom_hline(yintercept = 0, color = "grey") +
   geom_point(aes(color = WTD_rfvalue), alpha = 0.35, size = 0.3) +
-  scale_color_gradient(low = "#FFCC33", high = "#0C2C84",
+  scale_color_gradient(low = "#1518FD", high = "#FE0104",
                        limits = c(-150, 0),  # Set the range for the legend
                        breaks = seq(-150, 0, by = 30)) +
-  scale_x_continuous(limits = c(0, 1), breaks = c(0,0.2,0.4,0.6,0.8,1)) +
+  scale_y_continuous(limits = c(-1.4, 1.9),
+                     breaks = c(-1, -0.5, 0, 0.5, 1, 1.5)
+  ) +
+  scale_x_continuous(limits = c(0, 2.7),
+                     breaks = c(0, 0.5, 1, 1.5, 2, 2.5),
+                     expand = c(0, 0) # remove space below zero
+  ) +
   labs(x = "",
-       y = "",
-       color = "Aridity") +
+       y = "\n", # spaceholder to have same x-axes lengths in all panels
+       color = "WTD (m)") +
   theme_bw() +
   common_theme+
   theme(legend.position="none")
@@ -195,14 +212,21 @@ b <- combined_plot <- plot_grid(
 )
 
 c1 <- ggplot(shap_cropland, aes(Aridity_rfvalue, Aridity)) +
+  geom_hline(yintercept = 0, color = "grey") +
   geom_point(aes(color = WTD_rfvalue), alpha = 0.35, size = 0.3) +
-  scale_color_gradient(low = "#FFCC33", high = "#0C2C84",
+  scale_color_gradient(low = "#1518FD", high = "#FE0104",
                        limits = c(-150, 0),  # Set the range for the legend
                        breaks = seq(-150, 0, by = 30)) +
-  labs(x = expression('Aridity (-)'),
-       y = expression(atop('Shapley values for', 'Aridity (sr'^-1 * 'nm'^-1 * ")")),
-       color = "Aridity") +
-  scale_x_continuous(limits = c(0, 2)) +
+  labs(x = expression(paste("λP/R"[n], " (", "-", ")   ")),
+       y = "\n", # spaceholder to have same x-axes lengths in all panels
+       color = "WTD (m)") +
+  scale_y_continuous(limits = c(-1.4, 1.9),
+                     breaks = c(-1, -0.5, 0, 0.5, 1, 1.5)
+  ) +
+  scale_x_continuous(limits = c(0, 2.7),
+                     breaks = c(0, 0.5, 1, 1.5, 2, 2.5),
+                     expand = c(0, 0) # remove space below zero
+  ) +
   theme_bw() +
   common_theme+
   theme(legend.position="none")
@@ -223,14 +247,21 @@ c <- combined_plot <- plot_grid(
 )
 
 d1 <- ggplot(shap_grassland, aes(Aridity_rfvalue, Aridity)) +
+  geom_hline(yintercept = 0, color = "grey") +
   geom_point(aes(color = WTD_rfvalue), alpha = 0.35, size = 0.3) +
-  scale_color_gradient(low = "#FFCC33", high = "#0C2C84",
+  scale_color_gradient(low = "#1518FD", high = "#FE0104",
                        limits = c(-150, 0),  # Set the range for the legend
                        breaks = seq(-150, 0, by = 30)) +
-  scale_x_continuous(limits = c(0, 2)) +
-  labs(x = expression('Aridity (-)'),
-       y = "",
-       color = "WTD") +
+  scale_y_continuous(limits = c(-1.4, 1.9),
+                     breaks = c(-1, -0.5, 0, 0.5, 1, 1.5)
+  ) +
+  scale_x_continuous(limits = c(0, 2.7),
+                     breaks = c(0, 0.5, 1, 1.5, 2, 2.5),
+                     expand = c(0, 0) # remove space below zero
+  ) +
+  labs(x = expression(paste("λP/R"[n], " (", "-", ")   ")),
+       y = expression(paste("Shapley values for ", "λP/R"[n], " (", "-", ")   ")),
+       color = "WTD (m)") +
   theme_bw() +
   common_theme+
   theme(legend.position="none")
@@ -251,17 +282,9 @@ d <- combined_plot <- plot_grid(
 )
 
 
-# a <- a + theme(legend.key.width = unit(2, "cm"),
-#                legend.margin = margin(t = 15, unit = "pt"))  # Adjust the width as needed
-# b <- b + theme(legend.key.width = unit(2, "cm"),
-#                legend.margin = margin(t = 15, unit = "pt"))  # Adjust the width as needed
-# c <- c + theme(legend.key.width = unit(2, "cm"),
-#                legend.margin = margin(t = 100, unit = "pt"))  # Adjust the width as needed
-# d <- d + theme(legend.key.width = unit(2, "cm"),
-#                legend.margin = margin(t = 100, unit = "pt"))  # Adjust the width as needed
 
 # combine graphs
-fig <- ggarrange(a, b, c, d,
+fig <- ggarrange(a, b, d, c,
                  labels = "auto",
                  ncol = 2, nrow = 2,
                  align = "hv"
@@ -273,9 +296,10 @@ fig_ <- ggarrange(fig, mylegend,
                  heights = c(8,1)
 )
 
-png(filename = paste0("/Users/jiangongliu/Desktop/5_WTD_Aridity/figure/", 
-                      "FigS_Aridity_dependency.png"), 
-    width = 9, height = 7, units = "in", res = 600)
+
+png(filename = paste0("./",
+                      "FigS_dependence_moisture.png"),
+    width = 9, height = 7, units = "in", res = 300)
 print(fig_)
 dev.off()
 

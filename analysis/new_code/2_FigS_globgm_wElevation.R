@@ -9,7 +9,7 @@ std1 <- function(x) {
   return ((x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE)))
 }
 
-model_training_folder <- 'data/jiangong/model_training_elevation_US_Fan/'
+model_training_folder <- 'data/jiangong/model_training_elevation_US_globgm/'
 
 # forest
 df_forest <- readRDS(paste0(model_training_folder, "cshap_long_forests.rds"))

@@ -1,5 +1,11 @@
 scatterheat <- function(df, X, Y, title, pearson){
 
+  # Load necessary packages for this function
+  library(tidyverse)   # For data manipulation and plotting
+  library(ggplot2)     # For ggplot functionality
+  library(yardstick)   # For performance metrics like R^2 and RMSE
+  library(LSD)         # For heatscatter function
+
   # indicate if you want R2 (for the performance of a model) or Pearson correlation coefficient (for e.g. cross-correlation between features)
 
   df <- df %>%

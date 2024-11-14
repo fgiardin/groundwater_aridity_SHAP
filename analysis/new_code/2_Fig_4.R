@@ -174,7 +174,7 @@ a <- ggplot() +
 
 # updated Shapley plot ----------------------------------------------------
 
-# Load necessary libraries
+# Load libraries
 library(ggplot2)
 library(dplyr)
 library(sf)
@@ -316,6 +316,11 @@ df_GDE <- df_total %>%
          Land_cover == "savannas_and_shrublands") %>%
   dplyr::select(GDE, WTD)
 
+# Calculate sample sizes
+sample_sizes <- df_GDE %>%
+  group_by(GDE) %>%
+  summarise(n = n())
+
 
 # df_total %>% mutate(GDE = case_when(
 #   is.na(GDE_frac) ~ "non-GDE",
@@ -338,19 +343,24 @@ df_GDE <- df_total %>%
 #   1 GDE   grasslands              7.34e-13
 # 2 GDE   savannas_and_shrublands 1.24e-33
 
-# Perform Mann-Whitney U test (Wilcoxon rank-sum test)
-test_result <- wilcox.test(WTD ~ GDE, data = df_GDE)
-# Calculate sample sizes
-sample_sizes <- df_GDE %>%
-  group_by(GDE) %>%
-  summarise(n = n())
+### Perform Mann-Whitney U test (Wilcoxon rank-sum test)
+df_GDE$GDE <- as.factor(df_GDE$GDE) # trasform to factor
+levels(df_GDE$GDE) # check factor order
+# [1] "GDE"     "non-GDE" --> "GDE" is the first factor
+# we want to test if "GDE" has higher values than "non-GDE" --> use alternative = "greater"
+# test_result <- wilcox.test(WTD ~ GDE, data = df_GDE) # this test only checks if the distributions are different, not if one group has higher values than the other!!!
+test_result <- wilcox.test(WTD ~ GDE, data = df_GDE, alternative = "greater")
 
 p_value <- wilcox.test(WTD ~ GDE, data = df_GDE)$p.value
+p_value
+# p-value is 9.511841e-11, much smaller than threshold --> reject the null hypothesis and
+# conclude that there is strong evidence that the two distributions are significantly different from each other
+
 
 # Create the plot
 c <- ggplot(df_GDE, aes(x = GDE, y = WTD, fill = GDE)) +
   geom_violin(trim = FALSE, alpha = 0.5, color = "darkgrey") +
-  geom_boxplot(width = 0.1, fill = "white", color = "black", outlier.shape = NA) +
+  geom_boxplot(width = 0.1, fill = "white", color = "black") +
   annotate("text", x = 1.5, y = 0.29, label = paste("italic(p) ==", signif(p_value, 3)), parse = TRUE, size = 5) +
   scale_x_discrete(labels = paste0(sample_sizes$GDE, "\n(n = ", sample_sizes$n, ")")) +
   scale_y_continuous(limits = c(0, 0.3)) +
@@ -358,6 +368,7 @@ c <- ggplot(df_GDE, aes(x = GDE, y = WTD, fill = GDE)) +
   scale_fill_manual(values = c("#DCE6F0", "#A7C6EA")) +
   theme_bw() +
   theme(panel.grid.minor.x = element_blank(),
+        axis.line = element_blank(),  # removing axes lines
         axis.title.y = element_text(size = 13),
         axis.text.y = element_text(size = 12),
         axis.title.x = element_blank(),
@@ -368,6 +379,11 @@ c <- ggplot(df_GDE, aes(x = GDE, y = WTD, fill = GDE)) +
         panel.border = element_rect(color = "black", fill = NA, size = 1),
         plot.margin = unit(c(0, 0, 0, 0), "cm"),
         aspect.ratio = 0.5)
+c
+
+ggsave("FigS_boxplots.png", plot = c,
+       path = "./",
+       dpi=300, width = 8, height = 4.1)
 
 
 # group plots
@@ -377,9 +393,9 @@ right_col <- plot_grid(b, c, ncol = 1, nrow = 2,align = "v",
 all <- plot_grid(a, right_col, NULL, ncol = 3, nrow = 1,
                  rel_widths = c(1, 0.5, 0.05), labels = c("a", "",NULL))
 
-ggsave("Fig_4.pdf", plot = all,
+ggsave("Fig_4.png", plot = all,
        path = "./",
-       dpi=600, width = 13.5, height = 6.5)
+       dpi=300, width = 13.5, height = 6.5)
 
 
 
