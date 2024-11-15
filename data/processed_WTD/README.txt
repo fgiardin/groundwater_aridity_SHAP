@@ -1,1 +1,1 @@
-contains results of script "data-raw/extract_WTD.R" (WTD from Ying Fan already processed in right format for analysis)
+contains results of script "data-raw/extract_WTD.R" (WTD from Fan et al. processed in the right format for analysis)
