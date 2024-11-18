@@ -5,8 +5,8 @@ rm(list=ls())
 pacman::p_load(tidyverse, ncdf4, terra, bigleaf)
 # RColorBrewer,rnaturalearth,scales,
 # maps,sf,lubridate, cowplot, reshape2,viridis
-input_folder <- "data/"
-output_folder <- "data/"
+input_folder <- "./"
+output_folder <- "./"
 
 # SIF ---------------------------------------------------------------------
 df_SIF <- readRDS(paste0(output_folder, "df_SIF_summary.rds")) %>% arrange(lat)
@@ -75,7 +75,7 @@ writeCDF(inter_precip, paste0(input_folder, "inter_precip.nc"), overwrite=TRUE)
 # convert to dataframe for plotting
 df_precip <- terra::as.data.frame(inter_precip, xy = TRUE)
 names(df_precip) <- c("lon", "lat", "PRECIP")
-saveRDS(df_precip, paste0("/Users/jiangongliu/Desktop/Projects/Francesco/revision/new_dataframe/",
+saveRDS(df_precip, paste0("./",
                        "df_PRECIP.rds"), compress = "xz")
 
 # Elevation ---------------------------------------------------------------------
@@ -191,21 +191,6 @@ lonlat2$elevation <- as.vector(data_elevation)
 saveRDS(lonlat2, paste0(output_folder, "main.rds"), compress = "xz")
 write.csv(lonlat2, paste0(output_folder, "main.csv"), row.names = FALSE)
 
-# color_palette <- rev(RColorBrewer::brewer.pal(999, "RdYlBu"))
-# ggplot(data = lonlat2) +
-#   geom_tile(aes(x = lon_adj, y = lat, fill = land_cover_change, color = NA), colour = NA) +
-#   scale_fill_gradientn(colors = color_palette, na.value = "transparent") +
-#   coord_fixed(ratio = 1.5) +
-#   borders("world", colour = "grey50", size = 0.4) +
-#   theme_minimal()
-#
-#
-# lonlat_test <- lonlat2 %>% drop_na(SIF) %>% filter(veg_flag == 1)
-# ggplot(data = lonlat_test) +
-#   geom_tile(aes(x = lon_adj, y = lat, fill = elevation, color = NA), colour = NA) +
-#   scale_fill_gradientn(colors = color_palette, na.value = "transparent") +
-#   coord_fixed(ratio = 1.5) +
-#   borders("world", colour = "grey50", size = 0.4) +
-#   theme_minimal()
+
 
 

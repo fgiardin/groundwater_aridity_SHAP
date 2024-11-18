@@ -1,3 +1,5 @@
+# Plot beeswarm plots for the moisture index, water table depth and elevation (dataset from Fan et al)
+
 rm(list=ls())
 library(tidyverse)
 library(cowplot)
@@ -9,19 +11,21 @@ std1 <- function(x) {
   return ((x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE)))
 }
 
-model_training_folder <- 'data/jiangong/model_training_elevation_US_Fan/'
+model_training_folder <- 'data/model_output/model_training_elevation_US_Fan/'
 
-# forest
+# Forests
 df_forest <- readRDS(paste0(model_training_folder, "cshap_long_forests.rds"))
 ori_forest <- as.data.frame(df_forest$x_test)
 shap_forest <- df_forest$dt %>%
   mutate(WTD_rfvalue = ori_forest$WTD,
          Aridity_rfvalue = ori_forest$Aridity,
          Elevation_rfvalue = ori_forest$Elevation)
+
 # Step 1: standardization
 shap_forest$WTD_stdfvalue <- std1(shap_forest$WTD_rfvalue)
 shap_forest$Aridity_stdfvalue <- std1(shap_forest$Aridity_rfvalue)
 shap_forest$Elevation_stdfvalue <- std1(shap_forest$Elevation_rfvalue)
+
 # Step 2: contribution calculation
 shap_forest$WTD_mean_value <- mean(abs(shap_forest$WTD), na.rm = TRUE)
 shap_forest$Aridity_mean_value <- mean(abs(shap_forest$Aridity), na.rm = TRUE)
@@ -37,17 +41,19 @@ shap_long_forest <- melt(shap_forest,
                          value.name = c("value", "rfvalue", "stdfvalue", "mean_value"))
 shap_long_forest[, variable := factor(variable, labels = c("WTD", "Aridity", "Elevation"))]
 
-# savannas_and_scrublands
+# Savannas and shrublands
 df_savannas_and_scrublands <- readRDS(paste0(model_training_folder, "cshap_long_savannas_and_scrublands.rds"))
 ori_savannas_and_scrublands <- as.data.frame(df_savannas_and_scrublands$x_test)
 shap_savannas_and_scrublands <- df_savannas_and_scrublands$dt %>%
   mutate(WTD_rfvalue = ori_savannas_and_scrublands$WTD,
          Aridity_rfvalue = ori_savannas_and_scrublands$Aridity,
          Elevation_rfvalue = ori_savannas_and_scrublands$Elevation)
+
 # Step 1: standardization
 shap_savannas_and_scrublands$WTD_stdfvalue <- std1(shap_savannas_and_scrublands$WTD_rfvalue)
 shap_savannas_and_scrublands$Aridity_stdfvalue <- std1(shap_savannas_and_scrublands$Aridity_rfvalue)
 shap_savannas_and_scrublands$Elevation_stdfvalue <- std1(shap_savannas_and_scrublands$Elevation_rfvalue)
+
 # Step 2: contribution calculation
 shap_savannas_and_scrublands$WTD_mean_value <- mean(abs(shap_savannas_and_scrublands$WTD), na.rm = TRUE)
 shap_savannas_and_scrublands$Aridity_mean_value <- mean(abs(shap_savannas_and_scrublands$Aridity), na.rm = TRUE)
@@ -63,17 +69,19 @@ shap_long_dry <- melt(shap_savannas_and_scrublands,
                          value.name = c("value", "rfvalue", "stdfvalue", "mean_value"))
 shap_long_dry[, variable := factor(variable, labels = c("WTD", "Aridity", "Elevation"))]
 
-# cropland
+# Croplands
 df_cropland <- readRDS(paste0(model_training_folder, "cshap_long_croplands.rds"))
 ori_cropland <- as.data.frame(df_cropland$x_test)
 shap_cropland <- df_cropland$dt %>%
   mutate(WTD_rfvalue = ori_cropland$WTD,
          Aridity_rfvalue = ori_cropland$Aridity,
          Elevation_rfvalue = ori_cropland$Elevation)
+
 # Step 1: standardization
 shap_cropland$WTD_stdfvalue <- std1(shap_cropland$WTD_rfvalue)
 shap_cropland$Aridity_stdfvalue <- std1(shap_cropland$Aridity_rfvalue)
 shap_cropland$Elevation_stdfvalue <- std1(shap_cropland$Elevation_rfvalue)
+
 # Step 2: contribution calculation
 shap_cropland$WTD_mean_value <- mean(abs(shap_cropland$WTD), na.rm = TRUE)
 shap_cropland$Aridity_mean_value <- mean(abs(shap_cropland$Aridity), na.rm = TRUE)
@@ -89,17 +97,19 @@ shap_long_crop <- melt(shap_cropland,
                          value.name = c("value", "rfvalue", "stdfvalue", "mean_value"))
 shap_long_crop[, variable := factor(variable, labels = c("WTD", "Aridity", "Elevation"))]
 
-# grassland
+# Grasslands
 df_grassland <- readRDS(paste0(model_training_folder, "cshap_long_grasslands.rds"))
 ori_grassland <- as.data.frame(df_grassland$x_test)
 shap_grassland <- df_grassland$dt %>%
   mutate(WTD_rfvalue = ori_grassland$WTD,
          Aridity_rfvalue = ori_grassland$Aridity,
          Elevation_rfvalue = ori_grassland$Elevation)
+
 # Step 1: standardization
 shap_grassland$WTD_stdfvalue <- std1(shap_grassland$WTD_rfvalue)
 shap_grassland$Aridity_stdfvalue <- std1(shap_grassland$Aridity_rfvalue)
 shap_grassland$Elevation_stdfvalue <- std1(shap_grassland$Elevation_rfvalue)
+
 # Step 2: contribution calculation
 shap_grassland$WTD_mean_value <- mean(abs(shap_grassland$WTD), na.rm = TRUE)
 shap_grassland$Aridity_mean_value <- mean(abs(shap_grassland$Aridity), na.rm = TRUE)

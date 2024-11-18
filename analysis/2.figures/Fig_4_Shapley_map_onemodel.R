@@ -1,5 +1,6 @@
-# plot map of Causal Shapley values of WTD
+# Plot spatial representation of Causal Shapley values of WTD in the USA (one model for all vegeation groups)
 
+# load libraries
 library(tidyverse)
 library(LSD)
 library(sf)
@@ -9,23 +10,12 @@ library(ggpubr)
 library(cowplot)
 library(scales)
 library(RColorBrewer)
-
 sf_use_s2(FALSE)
 
 # load data --------------------------------------
-input_folder <- "data/jiangong/"
-model_training_folder <- 'data/jiangong/model_training_elevation_US_Fan_oneModel/'
-source("data/jiangong/0_land_cover_mapping.R")
-
-df_SHAP <- readRDS(paste0(input_folder, "main.rds"))
-
-# # load 'df_SHAP' only if it does not already exists in the environment
-# if (!exists("df_SHAP")) {
-#   df_SHAP <- readRDS(paste0(input_folder, "main.rds"))
-#   message("Data loaded successfully.")
-# } else {
-#   message("Data is already loaded in the environment.")
-# }
+df_SHAP <- readRDS("data/main.rds")
+model_training_folder <- 'data/model_output/model_training_elevation_US_Fan_oneModel/'
+source("data-raw/0_land_cover_mapping.R")
 
 df <- df_SHAP %>%
   drop_na(SIF, WTD_Fan, P_over_Rn, elevation, PAR) %>%
@@ -50,7 +40,6 @@ df_land_cover <- df_SHAP %>%
          lat > 24) %>%
   select(lon, lat, major_land_cover)
 
-# Determine the size of each chunk
 
 df.main <- data.frame()
 
@@ -103,7 +92,7 @@ col_vector <- brewer.pal(n_colors, "RdBu")
 ## Outliers
 # hist(data_sf_albers$WTD) -> skewed distribution, use quantiles to calculate outliers
 # quantiles don't assume a symmetrical distribution (the traditional boxplot method does)
-# Calculate the empirical percentiles for outlier detection (remove 1% of data in both directions)
+# Calculate the empirical percentiles for outlier detection (remove 0.5% of data in both directions)
 lower_threshold <- quantile(data_sf_albers$WTD, probs = 0.005)
 upper_threshold <- quantile(data_sf_albers$WTD, probs = 0.995)
 
@@ -185,36 +174,5 @@ a <- ggplot() +
 ggsave("Fig_4_onemodel.png", path = "./", width = 6, height = 5.5, dpi = 300)
 
 
-# old plot --------------------------------------
-b <- ggplot() +
-  geom_sf(data = data_sf_albers %>%
-            mutate(WTD = ifelse(WTD > 0.6, 0.6, WTD),
-                   WTD = ifelse(WTD < -0.8, -0.8, WTD)),
-          aes(color = WTD), pch = 15, size = 0.1) +
-  geom_sf(data = usa_map_albers, fill = "NA", color = "black", linewidth = 0.4) +
-  geom_text(data = state_centroids_albers,
-            aes(x = lon, y = lat, label = state_abb),
-            size = 3, color = "black") +
-  scale_color_viridis_c(
-    name = expression(paste('Shapley values for WTD (sr'^-1~'nm'^-1*')   ')),
-    option = "turbo",
-    breaks = c(-0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6),
-    labels = c("≤-0.8", "-0.6", "-0.4", "-0.2", "0", "0.2","0.4", "≥0.6"),
-    direction = -1) +
-  coord_sf(expand = TRUE) +
-  theme_minimal() +
-  theme(legend.position = "bottom",
-        axis.title.x = element_blank(),
-        axis.title.y = element_blank(),
-        legend.title = element_text(size = 12), legend.text = element_text(size = 10),
-        panel.spacing = unit(0, "lines")) +
-  guides(color = guide_colourbar(frame.linewidth = 0.5,
-                                 ticks.linewidth = 0.5,
-                                 frame.colour = "black",
-                                 ticks.colour = "black",
-                                 barwidth = 15,
-                                 barheight = 1))
-
-ggsave("Fig_4_onemodel_oldcolors.png", path = "./", width = 6, height = 5.5, dpi = 300)
 
 

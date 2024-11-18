@@ -10,6 +10,9 @@ library(ggpubr)
 # 0 - data preparation --------------------------------------
 sf_use_s2(FALSE)
 
+# read in data
+df_raw <- readRDS("data/main.rds")
+
 # Create USA map and transform its CRS
 usa_map <- st_as_sf(map("state", plot = FALSE, fill = TRUE)) # for map without state borders: "usa" instead of "state"
 usa_map <- st_transform(usa_map, 4326)
@@ -111,7 +114,6 @@ p_FanWTD <- ggplot() +
     direction = -1
   ) +
   theme_minimal() +
-  # labs(title = "WTD") +
   theme(legend.position = "bottom",
         legend.title = element_text(size = 12),
         legend.text = element_text(size = 10),
@@ -161,8 +163,8 @@ p_Elevation <- ggplot() +
                                  barheight = 1))
 
 # 1 - plot PFT groups --------------------------------------
-df_raw <- readRDS("data/main.rds") # reload data (different processing)
-source("data/jiangong/0_land_cover_mapping.R")
+df_SHAP <- readRDS("data/main.rds") # reload data (different processing)
+source("data-raw/0_land_cover_mapping.R")
 
 df <- df_SHAP %>%
   drop_na(SIF, WTD_Fan, P_over_Rn, elevation, PAR) %>%

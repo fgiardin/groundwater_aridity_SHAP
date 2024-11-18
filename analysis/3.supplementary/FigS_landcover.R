@@ -1,5 +1,6 @@
 # script to plot map of raw land cover and calculate % of irrigated croplands
 
+# load libraries
 library(tidyverse)
 library(sf)
 library(maps)
@@ -10,9 +11,8 @@ library(reshape2)
 library(ggtext)
 
 # load data
-input_folder <- "data/jiangong/"
-source("data/jiangong/0_land_cover_mapping.R")
-df_raw <- readRDS(paste0(input_folder, "main.rds"))
+df_raw <- readRDS("data/main.rds")
+source("data-raw/0_land_cover_mapping.R")
 
 # process data
 df_us <- df_raw %>% dplyr::filter(lon > -125, # focus on USA
@@ -51,22 +51,6 @@ usa_map_albers <- st_transform(usa_map, crs = albers_crs)
 p_landcover <- ggplot() +
   geom_sf(data = data_sf_albers, aes(color = land_cover), pch = 15, size = 0.1) +
   geom_sf(data = usa_map_albers, fill = "NA", color = "black", linewidth = 0.4) +
-  scale_color_manual(
-    name = "Land Cover",
-    values = c("forests" = forest_color,
-               "savannas_and_shrublands" = savanna_shrub_color,
-               "grasslands" = grassland_color,
-               "croplands" = cropland_color,
-               "other" = other_color),
-    labels = c("forests" = "Forests",            # Capitalize and add spaces
-               "savannas_and_shrublands" = "Savannas and Shrublands",
-               "grasslands" = "Grasslands",
-               "croplands" = "Croplands",
-               "other" = "Other"),
-    guide = guide_legend(
-      title = "",
-      override.aes = list(size = 4),
-      nrow = 2)) +
   coord_sf(expand = FALSE) +
   theme_minimal() +
   theme(legend.position = "bottom",

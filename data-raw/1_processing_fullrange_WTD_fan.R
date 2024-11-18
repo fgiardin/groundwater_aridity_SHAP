@@ -36,7 +36,7 @@ ggplot(data = df) +
 
 df_final <- df %>% select(-WTD_Fan) %>% rename(WTD_Fan = WTD_Fan2)
 saveRDS(df_final, paste0(input_folder,"Main.rds"), compress = "xz")
-write.csv(df_final, file = paste0(input_folder, "Main.csv"), row.names = F)
+# write.csv(df_final, file = paste0(input_folder, "Main.csv"), row.names = F)
 
 ggplot(data = df_final) +
   geom_point(aes(x = WTD_Fan, y = WTD_globgm))

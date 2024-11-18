@@ -10,9 +10,8 @@ library(reshape2)
 library(ggtext)
 
 # load data
-input_folder <- "data/jiangong/"
-source("data/jiangong/0_land_cover_mapping.R")
-df_raw <- readRDS(paste0(input_folder, "main.rds"))
+df_raw <- readRDS("data/main.rds")
+source("data-raw/0_land_cover_mapping.R")
 
 # process data
 df_us <- df_raw %>% dplyr::filter(lon > -125, # focus on USA

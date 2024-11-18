@@ -15,9 +15,7 @@ df_PFT <- df_int %>%
                 lon < -65,
                 lat < 50,
                 lat > 24) %>%
-  # dplyr::filter(PFT %in% namePFT) %>% # do for all PFTs within USA
   mutate(SIF_over_PAR = SIF_over_PAR * 10^6 + 0.4) #the intercept
-  # drop_na() # remove NAs for model
 
 # Fig. 1 B -----------------------------------------------------------------
 common_theme <- theme(
@@ -64,8 +62,10 @@ b <- ggplot(df_PFT) +
                linetype = "dashed",
                color = color_triangle,
                linewidth = lwidth) +
-  scale_x_continuous(expand = c(0, 0), limits = c(0,2.05)) + # remove space between axis and plotted data (!!!) , limits = c(0, 3)
-  scale_y_continuous(expand = c(0, 0), limits = c(0,4.05)) +
+  scale_x_continuous(expand = c(0, 0), # remove space between axis and plotted data
+                     limits = c(0,2.05)) +
+  scale_y_continuous(expand = c(0, 0),
+                     limits = c(0,4.05)) +
   theme(plot.margin = unit(c(5.5, 20, 5.5, 5.5), "points"))
 
 
@@ -124,8 +124,10 @@ a <- ggplot() +
            angle = 45, vjust = 0, size = 5, parse = TRUE) +
   annotate("text", x = 1.5, y = 0.99, label = "ET == R[n]", color = "black",
            vjust = -0.5, size = 5, parse = TRUE) +
-  scale_x_continuous(expand = c(0, 0), limits = c(0, 2.05)) + # remove space between axis and plotted data (!!!)
-  scale_y_continuous(expand = c(0, 0), limits = c(0, 1.3)) +
+  scale_x_continuous(expand = c(0, 0), # remove space between axis and plotted data
+                     limits = c(0, 2.05)) +
+  scale_y_continuous(expand = c(0, 0),
+                     limits = c(0, 1.3)) +
   theme(plot.margin = unit(c(5.5, 5.5, 5.5, 5.5), "points"))
 
 

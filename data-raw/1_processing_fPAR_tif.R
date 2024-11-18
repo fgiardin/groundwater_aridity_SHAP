@@ -9,10 +9,6 @@ files <- list.files(file_path, pattern = "SI_LAI_FPAR_CDR_WGS84_0.05degree_bimon
                     SI_LAI_FPAR_CDR_WGS84_0.05degree_bimonth_2019.*.tif|
                     SI_LAI_FPAR_CDR_WGS84_0.05degree_bimonth_2020.*.tif", full.names = TRUE)
 
-# # Indicate your path to the downloaded .tif files
-# file_path <- "/Users/jiangongliu/Desktop/Projects/Francesco/revision/new_netCDF/GIMMS_FPAR4g"
-# files <- list.files(file_path, pattern = "GIMMS_FPAR4g_2018.*.tif|GIMMS_FPAR4g_2019.*.tif|GIMMS_FPAR4g_2020.*.tif", full.names = TRUE)
-
 # Initialize an empty list to store each fPAR layer
 fpar_layers <- list()
 

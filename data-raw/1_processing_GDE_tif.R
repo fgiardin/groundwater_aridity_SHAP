@@ -42,7 +42,7 @@ df_reor <- df_tif %>% arrange(y)
 df$GDE_frac <- df_reor$GDE_frac_GA
 
 saveRDS(df, paste0(input_folder,"main.rds"), compress = "xz") # save shap dataframe
-write.csv(df, paste0(input_folder,"main.csv"),row.names = F)
+# write.csv(df, paste0(input_folder,"main.csv"),row.names = F)
 
 
 

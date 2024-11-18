@@ -1,16 +1,19 @@
+# plot coefficient of variation in time of WTD
+# figure used in review process
+
 rm(list=ls())
 library(tidyverse)
 
-input_folder <- "/Users/jiangongliu/Desktop/5_WTD_Aridity/new_dataframe/"
-df_SHAP <- readRDS(paste0(input_folder, "main.rds"))
-source("/Users/jiangongliu/Desktop/5_WTD_Aridity/code/0_land_cover_mapping.R")
+# load data
+df_SHAP <- readRDS("data/main.rds")
+source("data-raw/0_land_cover_mapping.R")
 
 hist(df_SHAP$WTD_obs_year_std)
 summary(df_SHAP$WTD_obs_year_std)
 summary(df_SHAP$WTD_obs_std)
 
-df <- df_SHAP %>% 
-  mutate(major_land_cover = recode(land_cover_num, !!!major_land_cover_mapping)) %>% 
+df <- df_SHAP %>%
+  mutate(major_land_cover = recode(land_cover_num, !!!major_land_cover_mapping)) %>%
   filter(P_over_Rn < 3,
          P_over_Rn > 0,
          major_land_cover != "other",
@@ -20,14 +23,14 @@ df <- df_SHAP %>%
          WTD_obs_n_sample >= 5,
          WTD_obs_n_sample < 1000,
          WTD_obs_std >= 0,
-         WTD_obs_mean >= 1) %>% 
+         WTD_obs_mean >= 1) %>%
   select(WTD_obs_cv)
 
 
-a <- ggplot(df, aes(x = "", y = WTD_obs_cv, fill = "")) +  
-  geom_violin(trim = FALSE, alpha = 0.5, color = "grey") +  
+a <- ggplot(df, aes(x = "", y = WTD_obs_cv, fill = "")) +
+  geom_violin(trim = FALSE, alpha = 0.5, color = "grey") +
   geom_boxplot(width = 0.1, fill = "white", color = "black", outlier.shape = NA) +
-  scale_y_continuous(limits = c(0, 2.5)) + 
+  scale_y_continuous(limits = c(0, 2.5)) +
   labs(y = "Coefficient of Variation (-)",
        x = "Observed WTD (m)") +
   scale_fill_manual(values = c("#A7C6EA")) +
@@ -36,8 +39,8 @@ a <- ggplot(df, aes(x = "", y = WTD_obs_cv, fill = "")) +
   annotate("text", x = 0.5, y = 1.9, label = "italic('90% quantile') == 0.68", parse = TRUE, size = 4.5, hjust = 0) +
   theme_bw() +
   theme(panel.grid.minor.x = element_blank(),
-        axis.title.y = element_text(size = 14), 
-        axis.title.x = element_text(size = 14), 
+        axis.title.y = element_text(size = 14),
+        axis.title.x = element_text(size = 14),
         axis.text.y = element_text(size = 12),
         axis.ticks.x = element_blank(),
         axis.ticks.length = unit(0.2, "cm"),
@@ -47,8 +50,8 @@ a <- ggplot(df, aes(x = "", y = WTD_obs_cv, fill = "")) +
 
 
 # Save the plot
-png(filename = paste0("/Users/jiangongliu/Desktop/5_WTD_Aridity/figure/", 
-                      "FigS_Dis_WTDcv.png"), 
+png(filename = paste0("./",
+                      "FigS_Dis_WTDcv.png"),
     width = 6, height = 4, units = "in", res = 600)
 print(a)
 dev.off()

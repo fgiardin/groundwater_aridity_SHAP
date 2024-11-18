@@ -1,4 +1,4 @@
-# plot map of Causal Shapley values of the Moisture Index
+# Plot spatial representation of Causal Shapley values of the Moisture Index in the USA (one model for all vegeation groups)
 
 library(tidyverse)
 library(LSD)
@@ -13,11 +13,9 @@ library(RColorBrewer)
 sf_use_s2(FALSE)
 
 # load data --------------------------------------
-input_folder <- "data/jiangong/"
-model_training_folder <- 'data/jiangong/model_training_elevation_US_Fan_oneModel/'
-source("data/jiangong/0_land_cover_mapping.R")
-
-df_SHAP <- readRDS(paste0(input_folder, "main.rds"))
+df_SHAP <- readRDS("data/main.rds")
+model_training_folder <- 'data/model_output/model_training_elevation_US_Fan_oneModel/'
+source("data-raw/0_land_cover_mapping.R")
 
 df <- df_SHAP %>%
   drop_na(SIF, WTD_Fan, P_over_Rn, elevation, PAR) %>%
@@ -45,7 +43,6 @@ df_land_cover <- df_SHAP %>%
   select(lon, lat, major_land_cover)
 
 # Determine the size of each chunk
-
 df.main <- data.frame()
 
 for (i in 1:3) {
@@ -131,7 +128,7 @@ labels <- lapply(breaks, function(x) {
 # Split colors into two gradients: one for negative and one for positive values
 n_negative_colors <- sum(breaks < 0)
 n_positive_colors <- sum(breaks > 0)
-col_vector <- col_vector[col_vector != "#F7F7F7"] # exclude central color ("white", which must correspond to zero)
+col_vector <- col_vector[col_vector != "#F7F7F7"] # exclude central color (which must correspond to zero)
 col_vector_negative <- colorRampPalette(col_vector[1:(n_colors / 2)])(n_negative_colors)
 col_vector_positive <- colorRampPalette(col_vector[(n_colors / 2 + 1):n_colors])(n_positive_colors)
 
@@ -144,7 +141,7 @@ length(breaks)
 
 # new plot --------------------------------------
 a <- ggplot() +
-  geom_sf(data = data_sf_albers_cut, aes(color = Aridity), pch = 15, size = 0.1) +  # Now plotting Aridity with updated colors
+  geom_sf(data = data_sf_albers_cut, aes(color = Aridity), pch = 15, size = 0.1) +
   geom_sf(data = usa_map_albers, fill = "NA", color = "black", linewidth = 0.5) +
   scale_color_gradientn(
     name = expression(paste('Shapley values for λP/R'[n], ' (sr'^-1~'nm'^-1*')  ')),
@@ -176,4 +173,4 @@ a <- ggplot() +
                                  barwidth = 15,
                                  barheight = 1))
 
-ggsave("FigS_US_map_onemodel.png", path = "./", width = 6, height = 5.5, dpi = 300)
+ggsave("FigS_map_onemodel_moistureindex.png", path = "./", width = 6, height = 5.5, dpi = 300)
