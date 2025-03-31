@@ -1,6 +1,6 @@
 This directory contains the processed input data and the output of the analysis:
 
-* **main.rds**: Contains the output of the analysis.
+* **main.rds**: Contains the input data of the analysis.
 
 * **processed_WTD**: Contains the processed WTD dataset from Fan et al.
 
