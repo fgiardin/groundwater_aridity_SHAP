@@ -60,11 +60,12 @@ fig <- ggplot(df_annotated, aes(x = WTD_Fan, y = WTD_globgm)) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "red", size = 0.5) +  # 1:1 line with thinner line
   geom_smooth(method = "lm", se = FALSE, color = "blue", size = 0.5) +  # Fit line with matching thickness
   facet_wrap(~ major_land_cover) +
-  labs(x = "WTD (Fan et al.)", y = "WTD GLOBGM") +
+  labs(x = "WTD from Fan et al. (m)", y = "WTD GLOBGM (m)") +
   theme_minimal() +
   theme(
     axis.title = element_text(size = 14),  # Increase axis title size
-    strip.text = element_text(size = 14)   # Increase the facet title (subpanel) size
+    strip.text = element_text(size = 14),  # Increase the facet title (subpanel) size
+    axis.line = element_line(color = "black", size = 0.5)
   ) +
   ylim(-1500, NA) +  # Limit the range of WTD_globgm to -1500 and above
   geom_textbox(data = df_results, aes(label = paste0("R² = ", round(R2, 2),
