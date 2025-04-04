@@ -17,6 +17,10 @@ df_PFT <- df_int %>%
                 lat > 24) %>%
   mutate(SIF_over_PAR = SIF_over_PAR * 10^6 + 0.4) #the intercept
 
+# colors
+# blue: #3A5ECC
+# red: #D7191C
+
 # Fig. 1 B -----------------------------------------------------------------
 common_theme <- theme(
   plot.title = element_text(hjust = 0.5, size = 16), # center title
@@ -191,7 +195,7 @@ c <- ggarrange(a, b,
                labels = c("a", "b"),
                ncol = 2, nrow = 1)
 ggsave("Fig_1.png", path = "./",
-       width = 8, height = 4, dpi = 200) # 600
+       width = 8, height = 4, dpi = 600) # 600
 
 
 

@@ -63,8 +63,10 @@ fig <- ggplot(df_annotated, aes(x = WTD_Fan, y = WTD_globgm)) +
   labs(x = "WTD from Fan et al. (m)", y = "WTD GLOBGM (m)") +
   theme_minimal() +
   theme(
-    axis.title = element_text(size = 14),  # Increase axis title size
-    strip.text = element_text(size = 14),  # Increase the facet title (subpanel) size
+    axis.title = element_text(size = 16),           # Increase axis title size
+    axis.text = element_text(size = 12),              # Increase tick label size
+    axis.ticks = element_line(color = "black", size = 0.5),  # Add tick marks
+    strip.text = element_text(size = 14),             # Increase facet label size
     axis.line = element_line(color = "black", size = 0.5)
   ) +
   ylim(-1500, NA) +  # Limit the range of WTD_globgm to -1500 and above
