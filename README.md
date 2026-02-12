@@ -5,7 +5,7 @@ This repository provides code and intermediary data to reproduce the analysis of
 
 All code is licensed under AGPL-v3, and the manuscript and data are licensed as CC-BY. Please review the individual directories and their LICENSE file for more information. You can cite the code in this repository as follows:
 
-> Giardina et al. (2024). Strong impact of groundwater on long-term photosynthesis: code and intermediary data. [https://zenodo.org/doi/10.5281/zenodo.10498084](https://zenodo.org/doi/10.5281/zenodo.10498084)
+> Giardina et al. (2024). Strong impact of groundwater on long-term mean photosynthesis in the contiguous United States: code and intermediary data. [https://zenodo.org/doi/10.5281/zenodo.10498084](https://zenodo.org/doi/10.5281/zenodo.10498084)
 
 
 ## Abstract

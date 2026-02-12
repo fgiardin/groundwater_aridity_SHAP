@@ -13,24 +13,24 @@ library(sf)
 # extract WTD data
 dname = "WTD"
 # north america
-WTD_NAmerica_raw <- rast("data-raw/WTD_global/NAMERICA_WTD_annualmean.nc", dname)
-NAmerica_mask <- rast("data-raw/WTD_global/NAMERICA_WTD_annualmean.nc", "mask")
+WTD_NAmerica_raw <- rast("~/data/WTD_global/NAMERICA_WTD_annualmean.nc", dname)
+NAmerica_mask <- rast("~/data/WTD_global/NAMERICA_WTD_annualmean.nc", "mask")
 
 # south america
-WTD_SAmerica_raw <- rast("data-raw/WTD_global/SAMERICA_WTD_annualmean.nc", dname)
-SAmerica_mask <- rast("data-raw/WTD_global/SAMERICA_WTD_annualmean.nc", "mask")
+WTD_SAmerica_raw <- rast("~/data/WTD_global/SAMERICA_WTD_annualmean.nc", dname)
+SAmerica_mask <- rast("~/data/WTD_global/SAMERICA_WTD_annualmean.nc", "mask")
 
 # africa
-WTD_africa_raw <- rast("data-raw/WTD_global/AFRICA_WTD_annualmean.nc", dname)
-Africa_mask <- rast("data-raw/WTD_global/AFRICA_WTD_annualmean.nc", "mask")
+WTD_africa_raw <- rast("~/data/WTD_global/AFRICA_WTD_annualmean.nc", dname)
+Africa_mask <- rast("~/data/WTD_global/AFRICA_WTD_annualmean.nc", "mask")
 
 # eurasia
-WTD_eurasia_raw <- rast("data-raw/WTD_global/EURASIA_WTD_annualmean.nc", dname)
-Eurasia_mask <- rast("data-raw/WTD_global/EURASIA_WTD_annualmean.nc", "mask")
+WTD_eurasia_raw <- rast("~/data/WTD_global/EURASIA_WTD_annualmean.nc", dname)
+Eurasia_mask <- rast("~/data/WTD_global/EURASIA_WTD_annualmean.nc", "mask")
 
 # oceania
-WTD_oceania_raw <- rast("data-raw/WTD_global/OCEANIA_WTD_annualmean.nc", dname)
-oceania_mask <- rast("data-raw/WTD_global/OCEANIA_WTD_annualmean.nc", "mask")
+WTD_oceania_raw <- rast("~/data/WTD_global/OCEANIA_WTD_annualmean.nc", dname)
+oceania_mask <- rast("~/data/WTD_global/OCEANIA_WTD_annualmean.nc", "mask")
 
 
 # process raw maps --------------------------------------------------------

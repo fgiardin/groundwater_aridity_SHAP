@@ -39,9 +39,9 @@ df <- df_SHAP %>%
          major_land_cover != "other", # exclude pixels that are not in our vegetation groups
          land_cover_change == 0) %>%
   filter(lon > -125, # focus on the CONUS
-                lon < -65,
-                lat < 50,
-                lat > 24) %>%
+         lon < -65,
+         lat < 50,
+         lat > 24) %>%
   select(lon, lat, SIF_over_PAR, WTD_Fan, P_over_Rn, elevation, major_land_cover, GDE_frac) %>%
   rename(WTD = WTD_Fan, Aridity = P_over_Rn, Elevation = elevation)
 
@@ -63,7 +63,10 @@ gbmGrid <- expand.grid(
   gamma = 0,
   subsample = 1,
   colsample_bytree = 1
-  )
+)
+
+# "forests" "croplands" "grasslands" "savannas_and_shrublands"
+# 39%, 20%, 19%, 22%
 
 for (i in major_types) {
   print(i)
@@ -165,6 +168,9 @@ for (i in major_types) {
   ggsave(paste0(i,"_model_performance.pdf"), plot = p_model,
          path = model_training_folder, dpi=600, width = 11, height = 5)
 
+
+# SHAP analysis -----------------------------------------------------------
+
   p <- mean(df_type$SIF_over_PAR)
 
   dataX <- as.matrix(subset(df_type,
@@ -186,11 +192,3 @@ for (i in major_types) {
   all.shap.causal <- explanation_causal$dt
   write.csv(all.shap.causal, file = paste0(model_training_folder, "all_causalSHAP_", i,".csv"), row.names = F)
 }
-
-
-
-
-
-
-
-

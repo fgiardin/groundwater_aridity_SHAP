@@ -14,7 +14,7 @@ std1 <- function(x) {
   return ((x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE)))
 }
 
-model_training_folder <- 'data/model_output/model_training_elevation_US_Fan/'
+model_training_folder <- 'model_output/'
 
 
 # Forests -----------------------------------------------------------------
@@ -25,11 +25,11 @@ shap_forest <- df_forest$dt %>%
          Aridity_rfvalue = ori_forest$Aridity) %>%
   dplyr::select(-Elevation)
 
-# Step 1: standardization
+# standardization
 shap_forest$WTD_stdfvalue <- std1(shap_forest$WTD_rfvalue)
 shap_forest$Aridity_stdfvalue <- std1(shap_forest$Aridity_rfvalue)
 
-# Step 2: contribution calculation
+# contribution calculation
 shap_forest$WTD_mean_value <- mean(abs(shap_forest$WTD), na.rm = TRUE)
 shap_forest$Aridity_mean_value <- mean(abs(shap_forest$Aridity), na.rm = TRUE)
 shap_long_forest <- melt(shap_forest,
@@ -45,18 +45,18 @@ shap_long_forest[, variable := factor(variable, labels = c("WTD", "Aridity"))]
 
 
 # Savannas and Shrublands -------------------------------------------------
-df_savannas_and_scrublands <- readRDS(paste0(model_training_folder, "cshap_long_savannas_and_scrublands.rds"))
+df_savannas_and_scrublands <- readRDS(paste0(model_training_folder, "cshap_long_savannas_and_shrublands.rds"))
 ori_savannas_and_scrublands <- as.data.frame(df_savannas_and_scrublands$x_test)
 shap_savannas_and_scrublands <- df_savannas_and_scrublands$dt %>%
   mutate(WTD_rfvalue = ori_savannas_and_scrublands$WTD,
          Aridity_rfvalue = ori_savannas_and_scrublands$Aridity) %>%
   dplyr::select(-Elevation)
 
-# Step 1: standardization
+# standardization
 shap_savannas_and_scrublands$WTD_stdfvalue <- std1(shap_savannas_and_scrublands$WTD_rfvalue)
 shap_savannas_and_scrublands$Aridity_stdfvalue <- std1(shap_savannas_and_scrublands$Aridity_rfvalue)
 
-# Step 2: contribution calculation
+# contribution calculation
 shap_savannas_and_scrublands$WTD_mean_value <- mean(abs(shap_savannas_and_scrublands$WTD), na.rm = TRUE)
 shap_savannas_and_scrublands$Aridity_mean_value <- mean(abs(shap_savannas_and_scrublands$Aridity), na.rm = TRUE)
 shap_long_dry <- melt(shap_savannas_and_scrublands,
@@ -79,12 +79,12 @@ shap_cropland <- df_cropland$dt %>%
          Elevation_rfvalue = ori_cropland$Elevation) %>%
   rename(Elevation = Elevation)
 
-# Step 1: standardization
+# standardization
 shap_cropland$WTD_stdfvalue <- std1(shap_cropland$WTD_rfvalue)
 shap_cropland$Aridity_stdfvalue <- std1(shap_cropland$Aridity_rfvalue)
 shap_cropland$Elevation_stdfvalue <- std1(shap_cropland$Elevation_rfvalue)
 
-# Step 2: contribution calculation
+# contribution calculation
 shap_cropland$WTD_mean_value <- mean(abs(shap_cropland$WTD), na.rm = TRUE)
 shap_cropland$Aridity_mean_value <- mean(abs(shap_cropland$Aridity), na.rm = TRUE)
 shap_cropland$Elevation_mean_value <- mean(abs(shap_cropland$Elevation), na.rm = TRUE)
@@ -109,12 +109,12 @@ shap_grassland <- df_grassland$dt %>%
          Elevation_rfvalue = ori_grassland$Elevation) %>%
   rename(Elevation = Elevation)
 
-# Step 1: standardization
+# standardization
 shap_grassland$WTD_stdfvalue <- std1(shap_grassland$WTD_rfvalue)
 shap_grassland$Aridity_stdfvalue <- std1(shap_grassland$Aridity_rfvalue)
 shap_grassland$Elevation_stdfvalue <- std1(shap_grassland$Elevation_rfvalue)
 
-# Step 2: contribution calculation
+# contribution calculation
 shap_grassland$WTD_mean_value <- mean(abs(shap_grassland$WTD), na.rm = TRUE)
 shap_grassland$Aridity_mean_value <- mean(abs(shap_grassland$Aridity), na.rm = TRUE)
 shap_grassland$Elevation_mean_value <- mean(abs(shap_grassland$Elevation), na.rm = TRUE)
@@ -145,9 +145,9 @@ common_theme <-  theme(legend.position = "bottom",
                        axis.title.x = element_text(size = 13, vjust = -1), # horizontal axis
                        axis.text.x = element_text(size = 12),
                        plot.margin = unit(c(3, 5, 8, 3), "points")
-                       )
+)
 
-custom_labels <- c(expression("λP/R"[n]), "WTD") # if change data: check that they correspond to actual showed variables
+custom_labels <- c(expression("λP/R"[n]), "WTD") # if running script with different data: check that names here correspond to actual predictors
 
 
 
@@ -160,18 +160,25 @@ a <- ggplot(data = shap_long_forest) +
             aes(x = variable, y = -Inf, label = sprintf("%.3f", mean_value)),
             size = 4, alpha = 0.8,
             hjust = -0.2,
-            fontface = "bold") + # bold
+            fontface = "bold") +
   scale_color_gradient(low = "#1518FD", high = "#FE0104", breaks = c(0, 1), labels = c("Low", "High")) +
   ggtitle("Forests") +
   theme_bw() +
   common_theme +
-  geom_hline(yintercept = 0) + # the vertical line
-  scale_y_continuous(limits = c(-2, 2),
-                     breaks = seq(-2, 2, by = 0.5)) +
+  geom_hline(yintercept = 0) +
+  scale_y_continuous(limits = c(-0.50, 0.50),
+                     breaks = seq(-0.50, 0.50, by = 0.25)) +
   scale_x_discrete(limits = rev(levels(shap_long_forest$variable)),
                    labels = custom_labels
-                   ) +
+  ) +
   labs(y = "", x = "", color = "Feature value   ")
+
+# png(filename = paste0("./",
+#                       "forests.png"),
+#     width = 4.91, height = 2.5, units = "in", res = 300)
+# # width = 10.8, height = 5.5, units = "in", res = 300)
+# print(a)
+# dev.off()
 
 
 b <- ggplot(data = shap_long_dry) +
@@ -181,18 +188,18 @@ b <- ggplot(data = shap_long_dry) +
             aes(x = variable, y = -Inf, label = sprintf("%.3f", mean_value)),
             size = 4, alpha = 0.8,
             hjust = -0.2,
-            fontface = "bold") + # bold
+            fontface = "bold") +
   scale_color_gradient(low = "#1518FD", high = "#FE0104", breaks = c(0, 1), labels = c("Low", "High")) +
   # scale_color_gradient(low = "#FFCC33", high = "#3F708A", breaks = c(0, 1), labels = c("Low", "High")) +
-  ggtitle("Savannahs and shrublands") +
+  ggtitle("Savannas and shrublands") +
   theme_bw() +
   common_theme +
-  geom_hline(yintercept = 0) + # the vertical line
-  scale_y_continuous(limits = c(-2, 2),
-                     breaks = seq(-2, 2, by = 0.5)) +
+  geom_hline(yintercept = 0) +
+  scale_y_continuous(limits = c(-0.50, 0.50),
+                     breaks = seq(-0.50, 0.50, by = 0.25)) +
   scale_x_discrete(limits = rev(levels(shap_long_dry$variable)),
                    labels = custom_labels
-                   ) +
+  ) +
   labs(y = "", x = "", color = "Feature value   ")
 
 x_bound <- round(max(abs(shap_long_crop$value)))+0.5
@@ -203,17 +210,17 @@ c <- ggplot(data = shap_long_crop) +
             aes(x = variable, y = -Inf, label = sprintf("%.3f", mean_value)),
             size = 4, alpha = 0.8,
             hjust = -0.2,
-            fontface = "bold") + # bold
+            fontface = "bold") +
   scale_color_gradient(low = "#1518FD", high = "#FE0104", breaks = c(0, 1), labels = c("Low", "High")) +
   ggtitle("Croplands") +
   theme_bw() +
   common_theme +
-  geom_hline(yintercept = 0) + # the vertical line
-  scale_y_continuous(limits = c(-2, 2),
-                     breaks = seq(-2, 2, by = 0.5)) +
+  geom_hline(yintercept = 0) +
+  scale_y_continuous(limits = c(-0.50, 0.50),
+                     breaks = seq(-0.50, 0.50, by = 0.25)) +
   scale_x_discrete(limits = rev(levels(shap_long_crop$variable)),
                    labels = custom_labels
-                   ) +
+  ) +
   labs(y = "Shapley value (impact on SIF)", x = "", color = "Feature value   ")
 
 x_bound <- round(max(abs(shap_long_grass$value)))+1
@@ -224,18 +231,26 @@ d <- ggplot(data = shap_long_grass) +
             aes(x = variable, y = -Inf, label = sprintf("%.3f", mean_value)),
             size = 4, alpha = 0.8,
             hjust = -0.2,
-            fontface = "bold") + # bold
+            fontface = "bold") +
   scale_color_gradient(low = "#1518FD", high = "#FE0104", breaks = c(0, 1), labels = c("Low", "High")) +
   ggtitle("Grasslands") +
   theme_bw() +
   common_theme +
-  geom_hline(yintercept = 0) + # the vertical line
-  scale_y_continuous(limits = c(-2, 2),
-                     breaks = seq(-2, 2, by = 0.5)) +
+  geom_hline(yintercept = 0) +
+  scale_y_continuous(limits = c(-0.50, 0.50),
+                     breaks = seq(-0.50, 0.50, by = 0.25)) +
   scale_x_discrete(limits = rev(levels(shap_long_grass$variable)),
                    labels = custom_labels
-                   ) +
+  ) +
   labs(y = "Shapley value (impact on SIF)", x = "", color = "Feature value   ")
+
+# png(filename = paste0("./",
+#                       "grasslands.png"),
+#     width = 4.91, height = 2.5, units = "in", res = 300)
+# # width = 10.8, height = 5.5, units = "in", res = 300)
+# print(d)
+# dev.off()
+
 
 # combine graphs
 fig <- ggarrange(a, b, c, d,

@@ -220,7 +220,7 @@ b1 <- ggplot(shap_savannas_and_scrublands, aes(WTD_rfvalue, WTD)) +
 
 b2 <- ggplot(shap_savannas_and_scrublands, aes(x = WTD_rfvalue)) +
   geom_density(fill = "grey", alpha = 0.7, color = NA) +
-  ggtitle("Savannas and shrublands") +
+  ggtitle("Savannahs and shrublands") +
   theme_void() +  # Minimal theme to remove axes, etc.
   theme(plot.margin = margin(t = 0, r = 5, b = 0, l = 5, unit = "pt"),
         plot.title = element_text(hjust = 0.5, size = 14))

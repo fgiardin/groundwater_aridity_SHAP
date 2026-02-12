@@ -29,7 +29,7 @@ df <- df_SHAP %>%
          lon < -65,
          lat < 50,
          lat > 24) %>%
-  select(lon, lat, SIF_over_PAR, WTD_Fan, P_over_Rn, elevation, major_land_cover, GDE_frac) %>%
+  dplyr::select(lon, lat, SIF_over_PAR, WTD_Fan, P_over_Rn, elevation, major_land_cover, GDE_frac) %>%
   rename(WTD = WTD_Fan, Aridity = P_over_Rn, Elevation = elevation)
 
 df_land_cover <- df_SHAP %>%
@@ -38,7 +38,7 @@ df_land_cover <- df_SHAP %>%
          lon < -65,
          lat < 50,
          lat > 24) %>%
-  select(lon, lat, major_land_cover)
+  dplyr::select(lon, lat, major_land_cover)
 
 
 df.main <- data.frame()

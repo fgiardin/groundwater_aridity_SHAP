@@ -79,7 +79,7 @@ saveRDS(df_precip, paste0("./",
                        "df_PRECIP.rds"), compress = "xz")
 
 # Elevation ---------------------------------------------------------------------
-nc_elevation <- nc_open(paste0(input_folder, "GMTED2010_15n015_0083deg.nc"))
+nc_elevation <- nc_open(paste0(input_folder, "GMTED2010_15n015_0083deg.nc")) # GMTED2010 elevation data regridded at 0.062 degree resolution
 data_elevation <- ncvar_get(nc_elevation, "elevation")
 data_elevation[!land_mask] <- NA
 nc_close(nc_elevation)
