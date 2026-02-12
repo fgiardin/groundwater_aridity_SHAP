@@ -5,7 +5,7 @@ This repository provides code and intermediary data to reproduce the analysis of
 
 All code is licensed under AGPL-v3, and the manuscript and data are licensed as CC-BY. Please review the individual directories and their LICENSE file for more information. You can cite the code in this repository as follows:
 
-> Giardina et al. (2024). Strong impact of groundwater on long-term mean photosynthesis in the contiguous United States: code and intermediary data. [https://zenodo.org/doi/10.5281/zenodo.10498084](https://zenodo.org/doi/10.5281/zenodo.10498084)
+> Giardina et al. (2026). Strong impact of groundwater on long-term mean photosynthesis in the contiguous United States: code and intermediary data. [https://zenodo.org/doi/10.5281/zenodo.10498084](https://zenodo.org/doi/10.5281/zenodo.10498084)
 
 
 ## Abstract
@@ -22,7 +22,7 @@ To reproduce the analysis and figures, follow the steps outlined in the `analysi
 
 Below is an overview of the contents of the other directories. For detailed instructions, please refer to the README files in each subdirectory and the opening line of each script, which provides a description of its purpose.
 
-* `data-raw`: contains raw data and the scripts used to download, extract and process raw data. Very big raw data can't be uploaded to this repo; please refer to the "Data availability" section of the manuscript to download them directly. It also containt the subdirectory `high_res` to repeat the whole analysis at 1-km resolution. 
+* `data-raw`: contains raw data and the scripts used to download, extract and process raw data. Very big raw data can't be uploaded to this repo; please refer to the "Data availability" section of the manuscript to download them directly. It also contains the subdirectory `high_res` to repeat the whole analysis at 1-km resolution. 
 * `data`: contains input data (preprocessed as described above) and output from the training of XGB models and the calculation of Causal Shapley values
 * `manuscript`: contains manuscript and figures.
 * `R`: contains all the R functions used in the analysis.
