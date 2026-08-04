@@ -30,10 +30,10 @@ df_us <- df_raw %>% dplyr::filter(lon > -125, # focus on USA
 # Set order for the land cover groups
 df_us$major_land_cover <- factor(df_us$major_land_cover,
                                  levels = c("forests", "savannas_and_shrublands", "croplands", "grasslands"),
-                                 labels = gsub("_", " ", tools::toTitleCase(c("forests", # reformat for printing
-                                                                              "savannas_and_shrublands",
-                                                                              "croplands",
-                                                                              "grasslands"))))
+                                 labels = c("Forests",
+                                            "Savannahs and shrublands",
+                                            "Croplands",
+                                            "Grasslands"))
 
 
 # Calculate R2, Bias, and RMSE by land cover group, removing NA values
@@ -95,4 +95,3 @@ df_us %>%
        x = "Average of WTD_Fan and WTD_globgm",
        y = "Difference (WTD_Fan - WTD_globgm)") +
   theme_minimal()
-

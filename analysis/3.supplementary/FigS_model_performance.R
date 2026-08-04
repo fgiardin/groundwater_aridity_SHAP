@@ -23,9 +23,9 @@ common_theme <-  theme(plot.title = element_text(hjust = 0.5, size = 18),
 for (i in major_types) {
 
   if (i == "savannas_and_scrublands") {
-    PFTname <- "savannas and scrublands"
+    PFTname <- "Savannahs and shrublands"
   } else {
-    PFTname <- i
+    PFTname <- tools::toTitleCase(i)
   }
 
   train <- readRDS(paste0(model_training_folder, "train_",i,".rds"))
@@ -125,7 +125,6 @@ png(filename = paste0("./",
     width = 10, height = 18, units = "in", res = 600)
 print(fig)
 dev.off()
-
 
 
 

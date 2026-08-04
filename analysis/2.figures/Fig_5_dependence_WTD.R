@@ -43,7 +43,7 @@ shap_long_forest <- melt(shap_forest,
                          value.name = c("value", "rfvalue", "stdfvalue", "mean_value"))
 shap_long_forest[, variable := factor(variable, labels = c("WTD", "Aridity", "Elevation"))]
 
-# Savannas and shrublands
+# Savannahs and shrublands
 df_savannas_and_scrublands <- readRDS(paste0(model_training_folder, "cshap_long_savannas_and_scrublands.rds"))
 ori_savannas_and_scrublands <- as.data.frame(df_savannas_and_scrublands$x_test)
 shap_savannas_and_scrublands <- df_savannas_and_scrublands$dt %>%
@@ -194,7 +194,7 @@ a <- combined_plot <- plot_grid(
   rel_heights = c(0.2, 1)  # Adjust the relative height; 0.3 for density and 1 for scatter
 )
 
-# SAVANNAS
+# Savannahs and shrublands
 b1 <- ggplot(shap_savannas_and_scrublands, aes(WTD_rfvalue, WTD)) +
   geom_hline(yintercept = 0, color = "grey") +
   geom_point(aes(color = Aridity_rfvalue), alpha = 0.35, size = 0.3) +
@@ -333,8 +333,6 @@ png(filename = paste0("./",
     width = 9, height = 7, units = "in", res = 300)
 print(fig_)
 dev.off()
-
-
 
 
 

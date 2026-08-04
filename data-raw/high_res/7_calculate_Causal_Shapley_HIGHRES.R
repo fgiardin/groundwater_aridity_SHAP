@@ -141,6 +141,11 @@ if (!file.exists(log_path)) {
 
 for (i in major_types) {
   print(i)
+  group_display_name <- if (i == "savannas_and_shrublands") {
+    "Savannahs and shrublands"
+  } else {
+    tools::toTitleCase(i)
+  }
   df_type <- df %>% filter(major_land_cover == i)
 
   set.seed(23)  # keep per-group reproducibility
@@ -222,7 +227,7 @@ for (i in major_types) {
              label = label_text_train, hjust = 0) +
     scale_y_continuous(limits = c(-0.1, 3.5)) +
     scale_x_continuous(limits = c(-0.1, 3.5)) +
-    ggtitle(paste0(i, " (train)")) +
+    ggtitle(paste0(group_display_name, " (train)")) +
     theme_bw() +
     theme(plot.title = element_text(hjust = 0.5),
           panel.grid.minor = element_blank())
@@ -246,7 +251,7 @@ for (i in major_types) {
              label = label_text_test, hjust = 0) +
     scale_y_continuous(limits = c(-0.1, 3.5)) +
     scale_x_continuous(limits = c(-0.1, 3.5)) +
-    ggtitle(paste0(i, " (test)")) +
+    ggtitle(paste0(group_display_name, " (test)")) +
     theme_bw() +
     theme(plot.title = element_text(hjust = 0.5),
           panel.grid.minor = element_blank())

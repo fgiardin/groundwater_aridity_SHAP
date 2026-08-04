@@ -42,7 +42,7 @@ shap_long_forest <- melt(shap_forest,
                          value.name = c("value", "rfvalue", "stdfvalue", "mean_value"))
 shap_long_forest[, variable := factor(variable, labels = c("WTD", "Aridity", "Elevation"))]
 
-# savannas and shrublands
+# Savannahs and shrublands
 df_savannas_and_scrublands <- readRDS(paste0(model_training_folder, "cshap_long_savannas_and_scrublands.rds"))
 ori_savannas_and_scrublands <- as.data.frame(df_savannas_and_scrublands$x_test)
 shap_savannas_and_scrublands <- df_savannas_and_scrublands$dt %>%
@@ -208,7 +208,7 @@ b1 <- ggplot(shap_savannas_and_scrublands, aes(Aridity_rfvalue, Aridity)) +
 
 b2 <- ggplot(shap_savannas_and_scrublands, aes(x = Aridity_rfvalue)) +
   geom_density(fill = "grey", alpha = 0.7, color = NA) +
-  ggtitle("Savannas and shrublands") +
+  ggtitle("Savannahs and shrublands") +
   theme_void() +  # Minimal theme to remove axes, etc.
   theme(plot.margin = margin(t = 0, r = 5, b = 0, l = 5, unit = "pt"),
         plot.title = element_text(hjust = 0.5, size = 14))
@@ -312,7 +312,6 @@ png(filename = paste0("./",
     width = 9, height = 7, units = "in", res = 300)
 print(fig_)
 dev.off()
-
 
 
 

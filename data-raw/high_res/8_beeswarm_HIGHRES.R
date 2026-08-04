@@ -44,7 +44,7 @@ shap_long_forest <- melt(shap_forest,
 shap_long_forest[, variable := factor(variable, labels = c("WTD", "Aridity"))]
 
 
-# Savannas and Shrublands -------------------------------------------------
+# Savannahs and shrublands ------------------------------------------------
 df_savannas_and_scrublands <- readRDS(paste0(model_training_folder, "cshap_long_savannas_and_shrublands.rds"))
 ori_savannas_and_scrublands <- as.data.frame(df_savannas_and_scrublands$x_test)
 shap_savannas_and_scrublands <- df_savannas_and_scrublands$dt %>%
@@ -191,7 +191,7 @@ b <- ggplot(data = shap_long_dry) +
             fontface = "bold") +
   scale_color_gradient(low = "#1518FD", high = "#FE0104", breaks = c(0, 1), labels = c("Low", "High")) +
   # scale_color_gradient(low = "#FFCC33", high = "#3F708A", breaks = c(0, 1), labels = c("Low", "High")) +
-  ggtitle("Savannas and shrublands") +
+  ggtitle("Savannahs and shrublands") +
   theme_bw() +
   common_theme +
   geom_hline(yintercept = 0) +
@@ -269,4 +269,3 @@ png(filename = paste0("./",
 # width = 10.8, height = 5.5, units = "in", res = 300)
 print(fig)
 dev.off()
-

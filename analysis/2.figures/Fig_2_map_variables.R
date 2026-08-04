@@ -211,7 +211,7 @@ p_landcover <- ggplot() +
                "croplands" = cropland_color,
                "other" = other_color),
     labels = c("forests" = "Forests",            # Capitalize and add spaces
-               "savannas_and_shrublands" = "Savannas and Shrublands",
+               "savannas_and_shrublands" = "Savannahs and shrublands",
                "grasslands" = "Grasslands",
                "croplands" = "Croplands",
                "other" = "Other"),
@@ -414,5 +414,4 @@ png(filename = paste0("./",
     width = 11, height = 5, units = "in", res = 300)
 print(A)
 dev.off()
-
 

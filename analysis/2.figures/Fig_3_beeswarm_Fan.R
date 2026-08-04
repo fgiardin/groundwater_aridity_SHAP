@@ -44,7 +44,7 @@ shap_long_forest <- melt(shap_forest,
 shap_long_forest[, variable := factor(variable, labels = c("WTD", "Aridity"))]
 
 
-# Savannas and Shrublands -------------------------------------------------
+# Savannahs and shrublands ------------------------------------------------
 df_savannas_and_scrublands <- readRDS(paste0(model_training_folder, "cshap_long_savannas_and_scrublands.rds"))
 ori_savannas_and_scrublands <- as.data.frame(df_savannas_and_scrublands$x_test)
 shap_savannas_and_scrublands <- df_savannas_and_scrublands$dt %>%
@@ -254,4 +254,3 @@ png(filename = paste0("./",
 # width = 10.8, height = 5.5, units = "in", res = 300)
 print(fig)
 dev.off()
-
