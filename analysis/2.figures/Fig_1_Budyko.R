@@ -135,9 +135,19 @@ theta_crit1 = 1
 EFmax1 = 1
 
 # define EFmax1 and theta_crit1 for upper line
-theta_crit2 = 1
+theta_crit2 = 1-0.2
 EFmax2 = EFmax1 + 0.005
 cept = 0.4 # intercept of lower line with y axis (if any)
+
+diag_label_offset = 0.04
+ET_P_label_x = 0.5
+ET_P_label_angle = 57
+ET_PG_label_x = 0.45 * theta_crit2 / theta_crit1
+ET_PG_slope = (EFmax2 - cept) / theta_crit2
+ET_P_slope = EFmax1 / theta_crit1
+ET_PG_label_y = cept + ET_PG_slope * ET_PG_label_x + diag_label_offset
+ET_PG_label_angle = atan((ET_PG_slope / ET_P_slope) *
+                           tan(ET_P_label_angle * pi / 180)) * 180 / pi + 2
 
 # plot figure
 a <- ggplot() +
@@ -170,16 +180,20 @@ a <- ggplot() +
                linetype = "solid",
                color = "#D7191C",
                linewidth = lwidth) +
-  geom_segment(aes(x = theta_crit1, xend = theta_crit1, y = 0, yend = 1), # line parallel to y-axis passing through x=1 and stopping at y=1
+
+  # line parallel to y-axis passing through x=1 and stopping at y=1
+  geom_segment(aes(x = theta_crit1, xend = theta_crit1, y = 0, yend = 1),
                linetype = "dotted",
                color = "black",
                linewidth = lwidth) +
 
   # annotations for the equations
-  annotate("text", x = 0.5, y = 0.54, label = "ET == P", color = "#3A5ECC",
-           angle = 57, vjust = 0, size = 5, parse = TRUE) +
-  annotate("text", x = 0.45, y = 0.7, label = "ET == P + G", color = "#D7191C",
-           angle = 45, vjust = 0, size = 5, parse = TRUE) +
+  annotate("text", x = ET_P_label_x, y = ET_P_label_x + diag_label_offset,
+           label = "ET == P", color = "black",
+           angle = ET_P_label_angle, vjust = 0, size = 5, parse = TRUE) +
+  annotate("text", x = ET_PG_label_x, y = ET_PG_label_y,
+           label = "ET == P + G", color = "black",
+           angle = ET_PG_label_angle, vjust = 0, size = 5, parse = TRUE) +
   annotate("text", x = 1.5, y = 0.99, label = "ET == R[n]", color = "black",
            vjust = -0.5, size = 5, parse = TRUE) +
   scale_x_continuous(expand = c(0, 0), # remove space between axis and plotted data
@@ -194,8 +208,9 @@ a <- ggplot() +
 c <- ggarrange(a, b,
                labels = c("a", "b"),
                ncol = 2, nrow = 1)
-ggsave("Fig_1.png", path = "./",
+ggsave("Fig_1.png", plot = c, path = "./",
        width = 8, height = 4, dpi = 600) # 600
+
 
 
 

@@ -185,7 +185,7 @@ df_land_cover <- df_SHAP %>%
          lon < -65,
          lat < 50,
          lat > 24) %>%
-  select(lon, lat, major_land_cover)
+  dplyr::select(lon, lat, major_land_cover)
 
 # plot
 data_lc_sf <- st_as_sf(df_land_cover, coords = c("lon", "lat"), crs = 4326)
