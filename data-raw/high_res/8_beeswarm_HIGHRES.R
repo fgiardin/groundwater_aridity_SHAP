@@ -14,7 +14,7 @@ std1 <- function(x) {
   return ((x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE)))
 }
 
-model_training_folder <- 'model_output/'
+model_training_folder <- "data-raw/high_res/model_output_highres/"
 
 
 # Forests -----------------------------------------------------------------
@@ -147,7 +147,7 @@ common_theme <-  theme(legend.position = "bottom",
                        plot.margin = unit(c(3, 5, 8, 3), "points")
 )
 
-custom_labels <- c(expression("λP/R"[n]), "WTD") # if running script with different data: check that names here correspond to actual predictors
+custom_labels <- c(expression(lambda * P/R[n]), "WTD")
 
 
 
@@ -161,7 +161,9 @@ a <- ggplot(data = shap_long_forest) +
             size = 4, alpha = 0.8,
             hjust = -0.2,
             fontface = "bold") +
-  scale_color_gradient(low = "#1518FD", high = "#FE0104", breaks = c(0, 1), labels = c("Low", "High")) +
+  scale_color_viridis_c(option = "inferno", begin = 0.15,
+                        breaks = c(0, 1), labels = c("Low", "High"),
+                        guide = guide_colourbar(display = "raster", nbin = 512)) +
   ggtitle("Forests") +
   theme_bw() +
   common_theme +
@@ -173,14 +175,6 @@ a <- ggplot(data = shap_long_forest) +
   ) +
   labs(y = "", x = "", color = "Feature value   ")
 
-# png(filename = paste0("./",
-#                       "forests.png"),
-#     width = 4.91, height = 2.5, units = "in", res = 300)
-# # width = 10.8, height = 5.5, units = "in", res = 300)
-# print(a)
-# dev.off()
-
-
 b <- ggplot(data = shap_long_dry) +
   coord_flip() +
   geom_sina(aes(x = variable, y = value, color = stdfvalue), alpha = 0.1, size = 0.55) +
@@ -189,8 +183,9 @@ b <- ggplot(data = shap_long_dry) +
             size = 4, alpha = 0.8,
             hjust = -0.2,
             fontface = "bold") +
-  scale_color_gradient(low = "#1518FD", high = "#FE0104", breaks = c(0, 1), labels = c("Low", "High")) +
-  # scale_color_gradient(low = "#FFCC33", high = "#3F708A", breaks = c(0, 1), labels = c("Low", "High")) +
+  scale_color_viridis_c(option = "inferno", begin = 0.15,
+                        breaks = c(0, 1), labels = c("Low", "High"),
+                        guide = guide_colourbar(display = "raster", nbin = 512)) +
   ggtitle("Savannahs and shrublands") +
   theme_bw() +
   common_theme +
@@ -202,7 +197,6 @@ b <- ggplot(data = shap_long_dry) +
   ) +
   labs(y = "", x = "", color = "Feature value   ")
 
-x_bound <- round(max(abs(shap_long_crop$value)))+0.5
 c <- ggplot(data = shap_long_crop) +
   coord_flip() +
   geom_sina(aes(x = variable, y = value, color = stdfvalue), alpha = 0.1, size = 0.55) +
@@ -211,7 +205,9 @@ c <- ggplot(data = shap_long_crop) +
             size = 4, alpha = 0.8,
             hjust = -0.2,
             fontface = "bold") +
-  scale_color_gradient(low = "#1518FD", high = "#FE0104", breaks = c(0, 1), labels = c("Low", "High")) +
+  scale_color_viridis_c(option = "inferno", begin = 0.15,
+                        breaks = c(0, 1), labels = c("Low", "High"),
+                        guide = guide_colourbar(display = "raster", nbin = 512)) +
   ggtitle("Croplands") +
   theme_bw() +
   common_theme +
@@ -221,9 +217,8 @@ c <- ggplot(data = shap_long_crop) +
   scale_x_discrete(limits = rev(levels(shap_long_crop$variable)),
                    labels = custom_labels
   ) +
-  labs(y = "Shapley value (impact on SIF)", x = "", color = "Feature value   ")
+  labs(y = "Shapley value (impact on fPAR)", x = "", color = "Feature value   ")
 
-x_bound <- round(max(abs(shap_long_grass$value)))+1
 d <- ggplot(data = shap_long_grass) +
   coord_flip() +
   geom_sina(aes(x = variable, y = value, color = stdfvalue), alpha = 0.1, size = 0.55) +
@@ -232,7 +227,9 @@ d <- ggplot(data = shap_long_grass) +
             size = 4, alpha = 0.8,
             hjust = -0.2,
             fontface = "bold") +
-  scale_color_gradient(low = "#1518FD", high = "#FE0104", breaks = c(0, 1), labels = c("Low", "High")) +
+  scale_color_viridis_c(option = "inferno", begin = 0.15,
+                        breaks = c(0, 1), labels = c("Low", "High"),
+                        guide = guide_colourbar(display = "raster", nbin = 512)) +
   ggtitle("Grasslands") +
   theme_bw() +
   common_theme +
@@ -242,30 +239,158 @@ d <- ggplot(data = shap_long_grass) +
   scale_x_discrete(limits = rev(levels(shap_long_grass$variable)),
                    labels = custom_labels
   ) +
-  labs(y = "Shapley value (impact on SIF)", x = "", color = "Feature value   ")
-
-# png(filename = paste0("./",
-#                       "grasslands.png"),
-#     width = 4.91, height = 2.5, units = "in", res = 300)
-# # width = 10.8, height = 5.5, units = "in", res = 300)
-# print(d)
-# dev.off()
-
+  labs(y = "Shapley value (impact on fPAR)", x = "", color = "Feature value   ")
 
 # combine graphs
 fig <- ggarrange(a, b, c, d,
                  labels = "auto",
                  ncol = 2, nrow = 2,
                  align = "hv",
-                 common.legend = TRUE, # have just one common legend
+                 common.legend = TRUE,
                  legend="bottom"
 )
 
 
 
 png(filename = paste0("./",
-                      "Fig_3_2_fan.png"),
+                      "FigS_highres_beeswarm_without_elevation.png"),
     width = 9.82, height = 5, units = "in", res = 300)
-# width = 10.8, height = 5.5, units = "in", res = 300)
 print(fig)
+dev.off()
+
+
+# Plot including elevation ------------------------------------------------
+
+prepare_elevation_beeswarm <- function(shap_object) {
+  original_values <- as.data.frame(shap_object$x_test)
+  shap_values <- data.table::as.data.table(data.table::copy(shap_object$dt))
+
+  stopifnot(
+    nrow(shap_values) == nrow(original_values),
+    all(c("WTD", "Aridity", "Elevation") %in% names(shap_values)),
+    all(c("WTD", "Aridity", "Elevation") %in% names(original_values))
+  )
+
+  shap_values[, `:=`(
+    WTD_rfvalue = original_values$WTD,
+    Aridity_rfvalue = original_values$Aridity,
+    Elevation_rfvalue = original_values$Elevation,
+    WTD_stdfvalue = std1(original_values$WTD),
+    Aridity_stdfvalue = std1(original_values$Aridity),
+    Elevation_stdfvalue = std1(original_values$Elevation),
+    WTD_mean_value = mean(abs(WTD), na.rm = TRUE),
+    Aridity_mean_value = mean(abs(Aridity), na.rm = TRUE),
+    Elevation_mean_value = mean(abs(Elevation), na.rm = TRUE)
+  )]
+
+  shap_long <- data.table::melt(
+    shap_values,
+    measure.vars = list(
+      c("WTD", "Aridity", "Elevation"),
+      c("WTD_rfvalue", "Aridity_rfvalue", "Elevation_rfvalue"),
+      c("WTD_stdfvalue", "Aridity_stdfvalue", "Elevation_stdfvalue"),
+      c("WTD_mean_value", "Aridity_mean_value", "Elevation_mean_value")
+    ),
+    variable.name = "variable",
+    value.name = c("value", "rfvalue", "stdfvalue", "mean_value")
+  )
+  shap_long[, variable := factor(
+    variable,
+    levels = seq_len(3),
+    labels = c("WTD", "Aridity", "Elevation")
+  )]
+  shap_long
+}
+
+plot_elevation_beeswarm <- function(data, title, point_size, show_axis_title,
+                                    shap_limit) {
+  feature_labels <- c("Elevation", expression(lambda * P/R[n]), "WTD")
+
+  ggplot(data) +
+    coord_flip() +
+    geom_sina(
+      aes(x = variable, y = value, color = stdfvalue),
+      alpha = 0.1,
+      size = point_size
+    ) +
+    geom_text(
+      data = unique(data[, .(variable, mean_value)]),
+      aes(x = variable, y = -Inf, label = sprintf("%.3f", mean_value)),
+      size = 4,
+      alpha = 0.8,
+      hjust = -0.2,
+      fontface = "bold"
+    ) +
+    scale_color_viridis_c(
+      option = "inferno",
+      begin = 0.15,
+      breaks = c(0, 1),
+      labels = c("Low", "High"),
+      guide = guide_colourbar(display = "raster", nbin = 512)
+    ) +
+    scale_y_continuous(
+      limits = c(-shap_limit, shap_limit),
+      breaks = seq(-0.50, 0.50, by = 0.25)
+    ) +
+    scale_x_discrete(
+      limits = rev(levels(data$variable)),
+      labels = feature_labels
+    ) +
+    ggtitle(title) +
+    theme_bw() +
+    common_theme +
+    geom_hline(yintercept = 0) +
+    labs(
+      y = if (show_axis_title) "Shapley value (impact on fPAR)" else "",
+      x = "",
+      color = "Feature value   "
+    )
+}
+
+shap_long_forest_elevation <- prepare_elevation_beeswarm(df_forest)
+shap_long_savannah_elevation <- prepare_elevation_beeswarm(df_savannas_and_scrublands)
+shap_long_crop_elevation <- prepare_elevation_beeswarm(df_cropland)
+shap_long_grass_elevation <- prepare_elevation_beeswarm(df_grassland)
+
+elevation_shap_limit <- max(
+  abs(shap_long_forest_elevation$value),
+  abs(shap_long_savannah_elevation$value),
+  abs(shap_long_crop_elevation$value),
+  abs(shap_long_grass_elevation$value),
+  na.rm = TRUE
+)
+elevation_shap_limit <- max(0.50, ceiling(elevation_shap_limit * 20) / 20)
+
+a_elevation <- plot_elevation_beeswarm(
+  shap_long_forest_elevation, "Forests", 0.35, FALSE, elevation_shap_limit
+)
+b_elevation <- plot_elevation_beeswarm(
+  shap_long_savannah_elevation, "Savannahs and shrublands", 0.55, FALSE,
+  elevation_shap_limit
+)
+c_elevation <- plot_elevation_beeswarm(
+  shap_long_crop_elevation, "Croplands", 0.55, TRUE, elevation_shap_limit
+)
+d_elevation <- plot_elevation_beeswarm(
+  shap_long_grass_elevation, "Grasslands", 0.55, TRUE, elevation_shap_limit
+)
+
+fig_elevation <- ggarrange(
+  a_elevation, b_elevation, c_elevation, d_elevation,
+  labels = "auto",
+  ncol = 2,
+  nrow = 2,
+  align = "hv",
+  common.legend = TRUE,
+  legend = "bottom"
+)
+
+png(
+  filename = "Supplementary Figure 10.png",
+  width = 9.82,
+  height = 5.8,
+  units = "in",
+  res = 300
+)
+print(fig_elevation)
 dev.off()

@@ -1,29 +1,35 @@
-[![DOI](https://zenodo.org/badge/741571682.svg)](https://zenodo.org/doi/10.5281/zenodo.10498084)
+[![DOI](https://zenodo.org/badge/741571682.svg)](https://doi.org/10.5281/zenodo.10498084)
 
-# Strong impact of groundwater on long-term photosynthesis in the contiguous United States
-This repository provides code and intermediary data to reproduce the analysis of the abovementioned project. For full details on the methodology and results please refer to the 'manuscript' folder. For a step-by-step guide on how to reproduce the analysis, refer to the 'Instructions' below. 
+# Groundwater regulates the spatial pattern of photosynthesis in the contiguous United States
 
-All code is licensed under AGPL-v3, and the manuscript and data are licensed as CC-BY. Please review the individual directories and their LICENSE file for more information. You can cite the code in this repository as follows:
+Francesco Giardina, Jiangong Liu, Sonia I. Seneviratne, Benjamin D. Stocker, and Pierre Gentine
 
-> Giardina et al. (2026). Strong impact of groundwater on long-term mean photosynthesis in the contiguous United States: code and intermediary data. [https://zenodo.org/doi/10.5281/zenodo.10498084](https://zenodo.org/doi/10.5281/zenodo.10498084)
+This repository provides the code and intermediary data used in the published study. The article is available in *Communications Earth & Environment*: [https://www.nature.com/articles/s43247-026-04067-w](https://www.nature.com/articles/s43247-026-04067-w) ([doi:10.1038/s43247-026-04067-w](https://doi.org/10.1038/s43247-026-04067-w)).
 
+> Giardina, F., Liu, J., Seneviratne, S. I., Stocker, B. D., and Gentine, P. (2026). Groundwater regulates the spatial pattern of photosynthesis in the contiguous United States. *Communications Earth & Environment*. [https://doi.org/10.1038/s43247-026-04067-w](https://doi.org/10.1038/s43247-026-04067-w)
+
+All code is licensed under AGPL-v3, and the manuscript and data are licensed as CC-BY. Please review the individual directories and their LICENSE file for more information. The code can be cited as follows:
+
+> Giardina et al. (2026). Groundwater regulates the spatial pattern of photosynthesis in the contiguous United States: code and intermediary data. [https://doi.org/10.5281/zenodo.10498084](https://doi.org/10.5281/zenodo.10498084)
 
 ## Abstract
-Plants can access water stored in aquifers to sustain their activity, releasing moisture into the atmosphere—a critical survival mechanism during drought. Understanding the role of groundwater in regulating photosynthesis is thus key for modelling land-atmosphere interactions. However, the impact of groundwater on long-term terrestrial ecosystem productivity remains poorly quantified, particularly when compared to well-known factors like aridity. Here, we use satellite observations of solar-induced fluorescence as a proxy for photosynthesis, together with model estimates of water table depth and aridity—quantified by the moisture index with reanalysis data—to investigate the relationship between groundwater and photosynthesis. Using causality-guided explainable machine learning, we demonstrate that groundwater plays a crucial role in determining spatial patterns of long-term mean photosynthesis, with varying importance across ecosystem types, and that its effect is comparable to aridity. We show that the relative importance of groundwater accounts for 48 to 101% of the effect attributed to aridity in modulating forest photosynthesis across the contiguous United States. The relative importance of groundwater compared to aridity remains substantial in savannahs and shrublands (30-58%), grasslands (22-42%), and croplands (15-32%). Our findings indicate that groundwater is a key driver of long-term mean photosynthesis, with an effect comparable in magnitude to climatic aridity.
+Plants can access water stored in aquifers to sustain their activity, releasing moisture into the atmosphere—a critical survival mechanism during drought. Understanding the role of groundwater in regulating photosynthesis is thus key for modelling land-atmosphere interactions. However, the contribution of groundwater to spatial variation in mean annual photosynthesis remains poorly quantified, particularly relative to well-known factors like climatic aridity. Here, we use satellite observations of solar-induced fluorescence together with model estimates of water table depth and aridity to investigate the relative role of groundwater and aridity in determining the spatial pattern of photosynthesis in the contiguous United States. Using causality-guided explainable machine learning, we show that the relative importance of groundwater accounts for 48 to 101% of the effect attributed to aridity in modulating forest photosynthesis across the contiguous United States. The relative importance of groundwater compared to aridity remains substantial in savannahs and shrublands (30-58%), grasslands (22-42%), and croplands (15-32%). Our findings reflect the role of water tables in regulating the water available in the rooting zone, with an effect comparable in magnitude to climatic aridity.
 
 ## Instructions
-First, clone this repo to your local directory:
+Clone the repository:
 
+```bash
+git clone https://github.com/fgiardin/groundwater_aridity_SHAP.git
 ```
-git clone https://github.com/fgiardin/groundwater_aridity_SHAP/
-```
 
-To reproduce the analysis and figures, follow the steps outlined in the `analysis` folder and its `README.md` file. To avoid overwriting the dataframes already loaded in this repository, scripts will save their output to the main directory of the project (the same directory where this README.md file is located).
+Run the scripts from the repository root. The main analysis is in `analysis/1.calculate_Causal_Shapley.R`; figure scripts are in `analysis/2.figures` and `analysis/3.supplementary`. The high-resolution analysis is in `data-raw/high_res`. Figure scripts write their output to the repository root.
 
-Below is an overview of the contents of the other directories. For detailed instructions, please refer to the README files in each subdirectory and the opening line of each script, which provides a description of its purpose.
+Raw input files that are too large for GitHub are not included. Their sources are documented in the article's Data availability section and in the corresponding processing scripts.
 
-* `data-raw`: contains raw data and the scripts used to download, extract and process raw data. Very big raw data can't be uploaded to this repo; please refer to the "Data availability" section of the manuscript to download them directly. It also contains the subdirectory `high_res` to repeat the whole analysis at 1-km resolution. 
-* `data`: contains input data (preprocessed as described above) and output from the training of XGB models and the calculation of Causal Shapley values
-* `manuscript`: contains manuscript and figures.
-* `R`: contains all the R functions used in the analysis.
+## Repository structure
 
+* `analysis`: model training and scripts for the main and supplementary figures.
+* `data-raw`: scripts used to process the raw input data, including the 0.0083° high-resolution analysis.
+* `data`: processed inputs and model outputs used by the figure scripts.
+* `manuscript`: publication and licensing information.
+* `R`: supporting R functions.

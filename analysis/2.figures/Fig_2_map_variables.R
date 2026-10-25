@@ -24,7 +24,7 @@ df_us <- df_raw %>% dplyr::filter(lon > -125, # focus on USA
                                   lat > 24) %>%
   mutate(SIF_over_PAR = SIF_over_PAR * 10^6) %>%
   dplyr::select(lon, lat, SIF, SIF_over_PAR, P_over_Rn, WTD_Fan, WTD_globgm,
-         elevation, GDE_frac)
+         elevation, GDE_frac, land_cover_chr)
 
 data_sf <- st_as_sf(df_us, coords = c("lon", "lat"), crs = 4326)
 
@@ -44,9 +44,9 @@ p_SIFoverPAR <- ggplot() +
             mutate(SIF_over_PAR = ifelse(SIF_over_PAR > 4, 4, SIF_over_PAR)),
           aes(color = SIF_over_PAR), pch = 15, size = 0.1) +
   geom_sf(data = usa_map_albers, fill = "NA", color = "black", linewidth = 0.4) +
-  scale_color_viridis_c(
+  scico::scale_color_scico(
     name = expression(paste("SIF/PAR x 10"^6 * " (sr"^-1 * "nm"^-1 * ")")),
-    option = "turbo",
+    palette = "batlow",
     breaks = c(0, 1, 2, 3, 4),   # Add breaks
     labels = c("0", "1", "2", "3", "≥4"),  # Corresponding labels for breaks
     direction = -1
@@ -62,7 +62,8 @@ p_SIFoverPAR <- ggplot() +
         panel.background = element_blank(),  # Remove background panel
         panel.border = element_blank()       # Remove panel border (if any)
         ) +
-  guides(color = guide_colourbar(frame.linewidth = 0.5,
+  guides(color = guide_colourbar(display = "gradient",
+                                 frame.linewidth = 0.5,
                                  ticks.linewidth = 0.5,
                                  frame.colour = "black",
                                  ticks.colour = "black",
@@ -75,9 +76,9 @@ p_Aridity <- ggplot() +
             mutate(P_over_Rn = ifelse(P_over_Rn > 2, 2, P_over_Rn)), # assign same color to outliers
           aes(color = P_over_Rn), pch = 15, size = 0.1) +
   geom_sf(data = usa_map_albers, fill = "NA", color = "black", linewidth = 0.4) +
-  scale_color_viridis_c(
+  scico::scale_color_scico(
     name = expression(paste("λP/R"[n], " (", "-", ")")),
-    option = "turbo",
+    palette = "lapaz",
     breaks = c(0.07, 0.5, 1, 1.5, 2),   # Add breaks as per data range
     labels = c("0", "0.5", "1", "1.5","≥2"),  # Corresponding labels for breaks
     direction = -1
@@ -93,7 +94,8 @@ p_Aridity <- ggplot() +
         panel.background = element_blank(),  # Remove background panel
         panel.border = element_blank()       # Remove panel border (if any)
         ) +
-  guides(color = guide_colourbar(frame.linewidth = 0.5,
+  guides(color = guide_colourbar(display = "gradient",
+                                 frame.linewidth = 0.5,
                                  ticks.linewidth = 0.5,
                                  frame.colour = "black",
                                  ticks.colour = "black",
@@ -106,12 +108,12 @@ p_FanWTD <- ggplot() +
             mutate(WTD = ifelse(WTD_Fan < -100, -100, WTD_Fan)), # same color for outliers / block the colorbar to values within the IQ
           aes(color = WTD), pch = 15, size = 0.1) +
   geom_sf(data = usa_map_albers, fill = "NA", color = "black", linewidth = 0.4) +
-  scale_color_viridis_c(
+  scico::scale_color_scico(
     name = "WTD (m)  ",
-    option = "turbo",
+    palette = "lapaz",
     breaks = c(-100, -75, -50, -25, -5.684342e-14),   # Add breaks as per data range
     labels = c("≤-100", "-75", "-50", "-25","0"),  # Corresponding labels for breaks
-    direction = -1
+    direction = 1
   ) +
   theme_minimal() +
   theme(legend.position = "bottom",
@@ -124,7 +126,8 @@ p_FanWTD <- ggplot() +
         panel.background = element_blank(),  # Remove background panel
         panel.border = element_blank()       # Remove panel border (if any)
         ) +
-  guides(color = guide_colourbar(frame.linewidth = 0.5,
+  guides(color = guide_colourbar(display = "gradient",
+                                 frame.linewidth = 0.5,
                                  ticks.linewidth = 0.5,
                                  frame.colour = "black",
                                  ticks.colour = "black",
@@ -137,9 +140,9 @@ p_Elevation <- ggplot() +
   geom_sf(data = data_sf_albers, # same color for outliers / block the colorbar to values within the IQ
           aes(color = elevation), pch = 15, size = 0.1) +
   geom_sf(data = usa_map_albers, fill = "NA", color = "black", linewidth = 0.4) +
-  scale_color_viridis_c(
+  scico::scale_color_scico(
     name = "Elevation (m)  ",
-    option = "turbo",
+    palette = "batlow",
     breaks = c(0, 1000, 2000, 3000, 4000),   # Add breaks as per data range
     labels = c("0", "1000", "2000", "3000","4000"),  # Corresponding labels for breaks
     direction = -1
@@ -155,7 +158,8 @@ p_Elevation <- ggplot() +
         panel.background = element_blank(),  # Remove background panel
         panel.border = element_blank()       # Remove panel border (if any)
         ) +
-  guides(color = guide_colourbar(frame.linewidth = 0.5,
+  guides(color = guide_colourbar(display = "gradient",
+                                 frame.linewidth = 0.5,
                                  ticks.linewidth = 0.5,
                                  frame.colour = "black",
                                  ticks.colour = "black",
@@ -261,9 +265,12 @@ all <- plot_grid(
   ncol = 1
 )
 
-ggsave("Fig_2.png", plot = all,
+ggsave("Figure 2.pdf", plot = all,
        path = "./",
-       dpi = 300, width = 10.5, height = 13.5)
+       device = cairo_pdf, bg = "white", width = 10.5, height = 13.5)
+ggsave("Figure 2.png", plot = all,
+       path = "./",
+       width = 10.5, height = 13.5, units = "in", dpi = 600, bg = "white")
 
 
 ### Maps for supplementary information
@@ -273,9 +280,9 @@ p_SIF <- ggplot() +
             mutate(SIF = ifelse(SIF > 1.5, 1.5, SIF)),
           aes(color = SIF), pch = 15, size = 0.1) +
   geom_sf(data = usa_map_albers, fill = "NA", color = "black", linewidth = 0.4) +
-  scale_color_viridis_c(
+  scico::scale_color_scico(
     name = expression(paste('SIF (mW'~'m'^-2~'sr'^-1~'nm'^-1*')')),
-    option = "turbo",
+    palette = "batlow",
     breaks = c(0, 0.5, 1, 1.5),   # Add breaks as per your data range.
     labels = c("0", "0.5", "1", "≥1.5"),  # Corresponding labels for breaks
     direction = -1
@@ -291,7 +298,8 @@ p_SIF <- ggplot() +
         panel.background = element_blank(),  # Remove background panel
         panel.border = element_blank()       # Remove panel border (if any)
         ) +
-  guides(color = guide_colourbar(frame.linewidth = 0.5,
+  guides(color = guide_colourbar(display = "gradient",
+                                 frame.linewidth = 0.5,
                                  ticks.linewidth = 0.5,
                                  frame.colour = "black",
                                  ticks.colour = "black",
@@ -304,12 +312,12 @@ p_GLOBGMWTD <- ggplot() +
             mutate(WTD = ifelse(WTD_globgm < -300, -300, WTD_globgm)), # same color for outliers / block the colorbar to values within the IQ
           aes(color = WTD), pch = 15, size = 0.1) +
   geom_sf(data = usa_map_albers, fill = "NA", color = "black", linewidth = 0.4) +
-  scale_color_viridis_c(
+  scico::scale_color_scico(
     name = "GLOBGM WTD (m)  ",
-    option = "turbo",
+    palette = "lapaz",
     breaks = c(-300, -200, -100, 0),   # Add breaks as per data range
     labels = c("≤-300", "-200", "-100", "0"),  # Corresponding labels for breaks
-    direction = -1
+    direction = 1
   ) +
   theme_minimal() +
   # labs(title = "WTD") +
@@ -323,7 +331,8 @@ p_GLOBGMWTD <- ggplot() +
         panel.background = element_blank(),  # Remove background panel
         panel.border = element_blank()       # Remove panel border (if any)
         ) +
-  guides(color = guide_colourbar(frame.linewidth = 0.5,
+  guides(color = guide_colourbar(display = "gradient",
+                                 frame.linewidth = 0.5,
                                  ticks.linewidth = 0.5,
                                  frame.colour = "black",
                                  ticks.colour = "black",
@@ -335,12 +344,12 @@ p_GDE <- ggplot() +
   geom_sf(data = data_sf_albers,
           aes(color = GDE_frac), pch = 15, size = 0.1) +
   geom_sf(data = usa_map_albers, fill = "NA", color = "black", linewidth = 0.4) +
-  scale_color_viridis_c(
+  scico::scale_color_scico(
     name = "GDE fraction  ",
-    option = "turbo",
+    palette = "lapaz",
     breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1),   # Add breaks as per data range
     labels = c("0", "0.2", "0.4", "0.6", "0.8", "1"),  # Corresponding labels for breaks
-    direction = 1,
+    direction = -1,
     na.value = "white"
   ) +
   theme_minimal() +
@@ -354,7 +363,8 @@ p_GDE <- ggplot() +
         panel.background = element_blank(),  # Remove background panel
         panel.border = element_blank()       # Remove panel border (if any)
         ) +
-  guides(color = guide_colourbar(frame.linewidth = 0.5,
+  guides(color = guide_colourbar(display = "gradient",
+                                 frame.linewidth = 0.5,
                                  ticks.linewidth = 0.5,
                                  frame.colour = "black",
                                  ticks.colour = "black",
@@ -368,7 +378,7 @@ Sall <- ggarrange(p_SIF, p_GLOBGMWTD, p_GDE,
                  labels = "auto",
                  ncol = 1, nrow = 3)
 
-ggsave("FigS_Smap.png", plot = Sall,
+ggsave("Supplementary Figure 4.png", plot = Sall,
        path = "./",
        dpi = 300, width = 6, height = 12)
 
@@ -410,8 +420,7 @@ A <- ggplot() +
         )
 
 png(filename = paste0("./",
-                      "Fig_us_land_cover.png"),
+                      "Supplementary Figure 6.png"),
     width = 11, height = 5, units = "in", res = 300)
 print(A)
 dev.off()
-

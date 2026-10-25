@@ -1,16 +1,10 @@
-# plot coefficient of variation in time of WTD
-# figure used in review process
+# Plot the temporal coefficient of variation in observed WTD.
 
 rm(list=ls())
 library(tidyverse)
 
-# load data
 df_SHAP <- readRDS("data/main.rds")
 source("data-raw/0_land_cover_mapping.R")
-
-hist(df_SHAP$WTD_obs_year_std)
-summary(df_SHAP$WTD_obs_year_std)
-summary(df_SHAP$WTD_obs_std)
 
 df <- df_SHAP %>%
   mutate(major_land_cover = recode(land_cover_num, !!!major_land_cover_mapping)) %>%
@@ -18,8 +12,8 @@ df <- df_SHAP %>%
          P_over_Rn > 0,
          major_land_cover != "other",
          land_cover_change == 0,
-         WTD_obs_year_mean > 2000, #select recent years
-         WTD_obs_year_std < 5, #make sure the sampling is relatively consistent
+         WTD_obs_year_mean > 2000,
+         WTD_obs_year_std < 5,
          WTD_obs_n_sample >= 5,
          WTD_obs_n_sample < 1000,
          WTD_obs_std >= 0,
@@ -49,13 +43,11 @@ a <- ggplot(df, aes(x = "", y = WTD_obs_cv, fill = "")) +
         plot.margin = unit(c(1, 1, 1, 1), "cm"))
 
 
-# Save the plot
 png(filename = paste0("./",
                       "FigS_Dis_WTDcv.png"),
     width = 6, height = 4, units = "in", res = 600)
 print(a)
 dev.off()
-
 
 
 

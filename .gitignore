@@ -1,4 +1,34 @@
 .Rproj.user
 .Rhistory
 .RData
+.RDataTmp*
 .Ruserdata
+.DS_Store
+
+# Generated figures and analysis output
+/*.pdf
+/*.png
+/output/
+
+# Large local high-resolution model outputs
+/data-raw/high_res/results_high_res/
+/data-raw/high_res/model_output_highres/
+/data-raw/high_res/elv/
+/data-raw/high_res/fpar/
+/data-raw/high_res/landcover/
+/data-raw/high_res/netrad/
+/data-raw/high_res/precip/
+/data/high_res/
+/data/main_global.rds
+
+# Local and superseded model results
+/data/model_output/not_in_paper/
+/data/model_output/*/not loaded on git/
+/data/model_output/*/old/
+/data/model_output/*/old_*/
+
+# Exploratory GLOBGM dependence plot
+/analysis/3.supplementary/FigS_dependence_WTD_globgm.R
+
+# Superseded high-resolution rooting-depth test
+/data-raw/high_res/process_maxrootdepth.R

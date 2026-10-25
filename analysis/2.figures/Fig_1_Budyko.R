@@ -208,10 +208,10 @@ a <- ggplot() +
 c <- ggarrange(a, b,
                labels = c("a", "b"),
                ncol = 2, nrow = 1)
-ggsave("Fig_1.png", plot = c, path = "./",
-       width = 8, height = 4, dpi = 600) # 600
-
-
+ggsave("Figure 1.pdf", plot = c, path = "./",
+       width = 8, height = 4, device = cairo_pdf, bg = "white")
+ggsave("Figure 1.png", plot = c, path = "./",
+       width = 8, height = 4, units = "in", dpi = 600, bg = "white")
 
 
 

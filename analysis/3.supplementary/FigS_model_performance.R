@@ -62,7 +62,7 @@ for (i in major_types) {
 
   fig <- ggplot(out_train, aes(x = train_y, y = pred_y_train)) +
     geom_bin2d(bins = 50) +  # Heatmap effect based on point density
-    scale_fill_gradient(low = 'gold1', high = 'firebrick2') +  # Color gradient
+    scico::scale_fill_scico(palette = "lapaz", direction = -1) +
     labs(x = expression(paste("Observed SIF/PAR x 10"^6 * " (sr"^-1 * "nm"^-1 * ")"))) +
     labs(y = expression(paste("Predicted SIF/PAR x 10"^6 * " (sr"^-1 * "nm"^-1 * ")"))) +
     ggtitle(paste0(PFTname, " (train)")) +
@@ -92,7 +92,7 @@ for (i in major_types) {
 
   fig <- ggplot(out_test, aes(x = test_y, y = pred_y)) +
     geom_bin2d(bins = 50) +  # Heatmap effect based on point density
-    scale_fill_gradient(low = 'gold1', high = 'firebrick2') +  # Color gradient
+    scico::scale_fill_scico(palette = "lapaz", direction = -1) +
     labs(x = expression(paste("Observed SIF/PAR x 10"^6 * " (sr"^-1 * "nm"^-1 * ")"))) +
     labs(y = expression(paste("Predicted SIF/PAR x 10"^6 * " (sr"^-1 * "nm"^-1 * ")"))) +
     ggtitle(paste0(PFTname, " (test)")) +
@@ -121,11 +121,10 @@ fig <- ggarrange(fig_train_forests, fig_test_forests,
 )
 
 png(filename = paste0("./",
-                      "FigS_training_performance.png"),
+                      "Supplementary Figure 7.png"),
     width = 10, height = 18, units = "in", res = 600)
 print(fig)
 dev.off()
-
 
 
 

@@ -22,7 +22,7 @@ registerDoMC(cores=5)
 source("data-raw/0_land_cover_mapping.R")
 
 # create directory to save model output
-current_dir <- getwd() # Get the working directory
+current_dir <- getwd()
 dir.create(file.path(current_dir, "model_output"))
 model_training_folder <- "model_output/"
 
@@ -133,7 +133,7 @@ for (i in major_types) {
   p1 <- ggplot(out_train, aes(x = train_y, y = pred_y_train)) +
     labs(y = expression('Prediction (sr'^-1~'nm'^-1*')'))+
     labs(x = expression(paste("SIF/PAR x 10"^3 * " (sr"^-1 * "nm"^-1 * ")")))+
-    geom_point(shape = 16, size = 1, ,alpha = 0.7, color = "#82B1D3") +
+    geom_point(shape = 16, size = 1, alpha = 0.7, color = "#82B1D3") +
     geom_abline(intercept = summary(lm.model.train)$coefficients[1,1],
                 slope = summary(lm.model.train)$coefficients[2,1]) +
     annotate("text", x = 0.2, y = 3,
@@ -157,7 +157,7 @@ for (i in major_types) {
   p2 <- ggplot(out_test, aes(x = test_y, y = pred_y)) +
     labs(y = expression('Prediction (sr'^-1~'nm'^-1*')'))+
     labs(x = expression(paste("SIF/PAR x 10"^3 * " (sr"^-1 * "nm"^-1 * ")")))+
-    geom_point(shape = 16, size = 1, ,alpha = 0.7, color = "#D5A65B") +
+    geom_point(shape = 16, size = 1, alpha = 0.7, color = "#D5A65B") +
     geom_abline(intercept = summary(lm.model.train)$coefficients[1,1],
                 slope = summary(lm.model.train)$coefficients[2,1]) +
     annotate("text", x = 0.2, y = 3,

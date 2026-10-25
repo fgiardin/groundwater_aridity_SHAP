@@ -1,5 +1,5 @@
 # script to extract apparent rooting depth from Stocker et al. 2023
-# (Supplementary Fig. 13)
+# (Supplementary Fig. 11)
 
 library(terra)
 library(tidyverse)
@@ -183,8 +183,5 @@ ggplot(df5_plot, aes(x = WTD_bin, y = root_m)) +
   ) +
   coord_cartesian(ylim = c(0, 55))
 
-ggsave("boxplot_rootingdepth_Stocker.png", path = "./",
+ggsave("Supplementary Figure 11.png", path = "./",
        width = 9, height = 7, dpi = 600)
-
-
-

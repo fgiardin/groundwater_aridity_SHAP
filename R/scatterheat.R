@@ -1,12 +1,9 @@
 scatterheat <- function(df, X, Y, title, pearson){
 
-  # Load necessary packages for this function
-  library(tidyverse)   # For data manipulation and plotting
-  library(ggplot2)     # For ggplot functionality
-  library(yardstick)   # For performance metrics like R^2 and RMSE
-  library(LSD)         # For heatscatter function
-
-  # indicate if you want R2 (for the performance of a model) or Pearson correlation coefficient (for e.g. cross-correlation between features)
+  library(tidyverse)
+  library(ggplot2)
+  library(yardstick)
+  library(LSD)
 
   df <- df %>%
     as_tibble() %>%
@@ -14,25 +11,13 @@ scatterheat <- function(df, X, Y, title, pearson){
     dplyr::select(X=X, Y=Y) %>%
     tidyr::drop_na(X, Y)
 
-  # linear regression
   lm_model <- lm(Y ~ X , data=df, na.action = na.omit)
   slope <- coef(lm_model)["X"]
   intercept <- coef(lm_model)["(Intercept)"]
 
-  # calculate metrics
-  sd_X = sd(df$X, na.rm = TRUE) #calculate standardised slope
-  sd_Y = sd(df$Y, na.rm = TRUE)
-  sd_slope = lm_model$coefficients[2]*(sd_X/sd_Y) # multipliant par le rapport des std dev
-
-  r2 = df %>% na.omit %>% yardstick::rsq(Y,X) # R2 - to double check
+  r2 = df %>% na.omit %>% yardstick::rsq(Y,X)
   rmse = df %>% na.omit %>% yardstick::rmse(Y,X)
-  N = nrow(lm_model[["model"]])
 
-  # # to double check calculate R2 in two ways (from model and from yardstick)
-  # subtitle = sprintf("R2 = %.3f (%.3f), RMSE = %.3f, Slope = %.3f, N = %1.0f", summary(lm_model)$r.squared, r2$.estimate, rmse$.estimate, sd_slope, N)
-
-  # calculate R2 with yardstick (both methods above are consistent)
-  # subtitle = sprintf("R2 = %.2f, RMSE = %.2f", r2$.estimate, rmse$.estimate)
   subtitle <- bquote(italic(R^2)~" = " ~ .(round(r2$.estimate, 2)) ~ ", RMSE = " ~ .(round(rmse$.estimate, 2)))
 
   if(pearson){
@@ -43,7 +28,6 @@ scatterheat <- function(df, X, Y, title, pearson){
   }
 
 
-  # adjust axis names
   if(X == "nn_act"){
     axisX = expression(paste(ET[NN], " (mm d"^"-1"*")"))
   } else if(X == "obs"){
@@ -84,15 +68,8 @@ scatterheat <- function(df, X, Y, title, pearson){
     axisY = Y
   }
 
-  # define breaks
-  # Calculate the range for X and Y
   range_x <- range(df$X, na.rm = TRUE)
   range_y <- range(df$Y, na.rm = TRUE)
-
-  # Define a function to get suitable breaks based on the data range
-  # If the data's range is larger than 10 units, it utilizes the pretty function to find good breaks.
-  # If the range is between 1 and 10, it creates breaks at intervals of 0.5.
-  # For ranges less than 1, it creates breaks at intervals of 0.1.
 
   get_breaks <- function(rng) {
     diff <- rng[2] - rng[1]
@@ -105,11 +82,9 @@ scatterheat <- function(df, X, Y, title, pearson){
     }
   }
 
-  # Get the breaks for X and Y
   breaks_x <- get_breaks(range_x)
   breaks_y <- get_breaks(range_y)
 
-  # density plot on ggplot
   a <- heatscatter(x = df$X, y = df$Y, ggplot = TRUE)
   a <- a +
     labs(
@@ -129,12 +104,12 @@ scatterheat <- function(df, X, Y, title, pearson){
       axis.text=element_text(size = 14),
       axis.title=element_text(size = 14),
       legend.text=element_text(size=14),
-      plot.title = element_text(hjust = 0.5, size = 16), # center and bold title
+      plot.title = element_text(hjust = 0.5, size = 16),
       plot.margin = margin(0.5, 0.5, 0.5, 0.5, "cm"),
-      axis.line=element_blank(), # remove axis line (otherwise overlap with box)
+      axis.line=element_blank(),
       plot.subtitle=element_text(hjust=0.5),
-      axis.ticks.length = unit(0.25, "cm"), # longer ticks
-      panel.border = element_rect(  # box around figure
+      axis.ticks.length = unit(0.25, "cm"),
+      panel.border = element_rect(
         color = "black",
         fill = NA,
         size = 1),

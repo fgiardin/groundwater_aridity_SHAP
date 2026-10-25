@@ -1,4 +1,4 @@
-# SCRIPT to plot the cross-correlation between variables used in the XGB models
+# Plot correlations among the variables used in the XGBoost models.
 
 library(tidyverse)
 library(sf)
@@ -9,7 +9,6 @@ library(ggplot2)
 library(reshape2)
 library(ggcorrplot)
 
-# load data
 df_raw <- readRDS("data/main.rds")
 source("data-raw/0_land_cover_mapping.R")
 
@@ -28,31 +27,25 @@ df_us <- df_raw %>% dplyr::filter(lon > -125, # focus on USA
                 elevation, major_land_cover)
 
 
-## PLOT
-# Select relevant columns for correlation analysis
 cor_data <- df_us[, c("SIF_over_PAR", "P_over_Rn", "WTD_Fan", "elevation")]
 
-# Calculate the correlation matrix
 cor_matrix <- cor(cor_data, use = "complete.obs")
 
-# Create a heatmap of the correlation matrix
 plotto <- ggcorrplot(cor_matrix,
-           method = "square",           # square tiles for a cleaner look
-           type = "upper",              # Only display the lower triangle
-           lab = TRUE,                  # Show the correlation coefficients
-           lab_size = 3.5,              # Adjust label size for readability
-           colors = c("#B2182B", "white", "#2166AC"), # Use colorblind-friendly colors
-           outline.color = "black",     # Add a border around tiles
-           # title = "Correlation Matrix",
-           ggtheme = theme_classic() +  # Use a classic theme for a clean look
+           method = "square",
+           type = "upper",
+           lab = TRUE,
+           lab_size = 3.5,
+           colors = scico::scico(3, palette = "vik"),
+           outline.color = "black",
+           ggtheme = theme_classic() +
              theme(
                plot.title = element_blank(),
-               # plot.title = element_text(hjust = 0.5, face = "bold", size = 12), # Center and bold title
-               axis.text = element_text(size = 10),   # Adjust axis text size
-               axis.title = element_blank(),          # Remove axis titles
-               legend.position = "right",             # Place the legend on the right
-               legend.title = element_text(size = 10, face = "bold"), # Bold legend title
-               legend.text = element_text(size = 9)   # Adjust legend text size
+               axis.text = element_text(size = 10),
+               axis.title = element_blank(),
+               legend.position = "right",
+               legend.title = element_text(size = 10, face = "bold"),
+               legend.text = element_text(size = 9)
              )) +
   scale_x_discrete(labels = c("SIF_over_PAR" = "SIF/PAR",
                               "P_over_Rn" = expression(lambda * "P/R"[n]),
@@ -63,5 +56,4 @@ plotto <- ggcorrplot(cor_matrix,
                               "WTD_Fan" = "WTD",
                               "elevation" = "Elevation"))
 
-# save final plot
-ggsave("FigS_crosscorr.png", plotto, width = 5, height = 4, dpi = 600)
+ggsave("Supplementary Figure 1.png", plotto, width = 5, height = 4, dpi = 600)

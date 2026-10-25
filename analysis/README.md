@@ -1,9 +1,9 @@
-This directory contains the script to reproduce the analysis and all figures:
+This directory contains the main analysis and figure scripts:
 
-* **1.calculate_Causal_Shapley.R**: Trains XGB models and calculates Causal Shapley values.
+* `1.calculate_Causal_Shapley.R`: trains the XGBoost models and calculates causal Shapley values.
 
-* **2.figures**: Scripts to reproduce all figures in the main text.
+* `2.figures`: scripts for Figures 1-5 in the main text.
 
-* **3.supplementary**: Scripts to reproduce all figures in the Supplementary Material.
+* `3.supplementary`: scripts for supplementary figures and additional sensitivity analyses.
 
-Note that the code to repeat the whole analysis at 1-km resolution is found in `/data-raw/high_res`.
+The high-resolution analysis is in `data-raw/high_res`.

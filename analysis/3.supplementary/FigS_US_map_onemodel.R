@@ -1,4 +1,4 @@
-# Plot spatial representation of Causal Shapley values of the Moisture Index in the USA (one model for all vegeation groups)
+# Map causal Shapley values for the moisture index.
 
 library(tidyverse)
 library(LSD)
@@ -8,8 +8,6 @@ library(viridis)
 library(ggpubr)
 library(cowplot)
 library(scales)
-library(RColorBrewer)
-
 sf_use_s2(FALSE)
 
 # load data --------------------------------------
@@ -86,32 +84,21 @@ state_centroids_albers <- st_transform(state_centroids, crs = albers_crs)
 state_centroids_albers <- state_centroids_albers %>%
   mutate(lon = st_coordinates(.)[,1], lat = st_coordinates(.)[,2])
 
-## NEW COLORBAR
-# Define the number of colors
-n_colors <- 11
-col_vector <- brewer.pal(n_colors, "RdBu")
-
-## Outliers
-# hist(data_sf_albers$WTD) -> skewed distribution, use quantiles to calculate outliers
-# quantiles don't assume a symmetrical distribution (the traditional boxplot method does)
-# Calculate the empirical percentiles for outlier detection (remove 1% of data in both directions)
+# Cap the most extreme 0.5% at each end of the Shapley-value distribution.
 lower_threshold <- quantile(data_sf_albers$Aridity, probs = 0.005)
 upper_threshold <- quantile(data_sf_albers$Aridity, probs = 0.995)
 
-# Removed outliers based on the calculated thresholds
 data_sf_albers_cut <- data_sf_albers %>%
   mutate(Aridity = ifelse(Aridity < lower_threshold, lower_threshold, Aridity),
          Aridity = ifelse(Aridity > upper_threshold, upper_threshold, Aridity))
 
-# Define breaks, making sure zero is included
 breaks <- seq(floor(lower_threshold * 10) / 10, ceiling(upper_threshold * 10) / 10, by = 0.1)
-breaks <- round(breaks, digits = 10) # Round very small values to zero
-breaks <- ifelse(breaks == 0, 0, breaks) # remove decimal point
+breaks <- round(breaks, digits = 10)
+breaks <- ifelse(breaks == 0, 0, breaks)
 
-# define labels
 labels <- lapply(breaks, function(x) {
   formatted_value <- if (x == 0) {
-    "0"  # Display zero as "0" instead of "0.0"
+    "0"
   } else {
     scales::number_format(accuracy = 0.1)(x)
   }
@@ -125,29 +112,16 @@ labels <- lapply(breaks, function(x) {
   }
 })
 
-# Split colors into two gradients: one for negative and one for positive values
-n_negative_colors <- sum(breaks < 0)
-n_positive_colors <- sum(breaks > 0)
-col_vector <- col_vector[col_vector != "#F7F7F7"] # exclude central color (which must correspond to zero)
-col_vector_negative <- colorRampPalette(col_vector[1:(n_colors / 2)])(n_negative_colors)
-col_vector_positive <- colorRampPalette(col_vector[(n_colors / 2 + 1):n_colors])(n_positive_colors)
-
-# Combine the two color scales
-final_col_vector <- c(col_vector_negative, "#F7F7F7", col_vector_positive)
-
-length(col_vector)
-length(final_col_vector)
-length(breaks)
-
-# new plot --------------------------------------
 a <- ggplot() +
   geom_sf(data = data_sf_albers_cut, aes(color = Aridity), pch = 15, size = 0.1) +
   geom_sf(data = usa_map_albers, fill = "NA", color = "black", linewidth = 0.5) +
-  scale_color_gradientn(
+  scico::scale_color_scico(
     name = expression(paste('Shapley values for λP/R'[n], ' (sr'^-1~'nm'^-1*')  ')),
-    colors = final_col_vector,
+    palette = "vik",
+    direction = -1,
+    midpoint = 0,
     breaks = breaks,
-    labels = ifelse(seq_along(labels) %% 2 == 0, "", labels),  # Only display every other label (replace with space)
+    labels = ifelse(seq_along(labels) %% 2 == 0, "", labels),
     limits = range(breaks)
   ) +
   coord_sf(expand = TRUE) +
@@ -166,11 +140,13 @@ a <- ggplot() +
         panel.background = element_blank(),  # Remove background panel
         panel.border = element_blank()      # Remove panel border (if any)
   ) +
-  guides(color = guide_colourbar(frame.linewidth = 0.5,
+  guides(color = guide_colourbar(display = "raster",
+                                 nbin = 512,
+                                 frame.linewidth = 0.5,
                                  ticks.linewidth = 0.5,
                                  frame.colour = "black",
                                  ticks.colour = "black",
                                  barwidth = 15,
                                  barheight = 1))
 
-ggsave("FigS_map_onemodel_moistureindex.png", path = "./", width = 6, height = 5.5, dpi = 300)
+ggsave("Supplementary Figure 3.png", path = "./", width = 6, height = 5.5, dpi = 300)

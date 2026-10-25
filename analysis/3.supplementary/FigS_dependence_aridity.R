@@ -22,12 +22,10 @@ shap_forest <- df_forest$dt %>%
          Aridity_rfvalue = ori_forest$Aridity,
          Elevation_rfvalue = ori_forest$Elevation)
 
-# Step 1: standardization
 shap_forest$WTD_stdfvalue <- std1(shap_forest$WTD_rfvalue)
 shap_forest$Aridity_stdfvalue <- std1(shap_forest$Aridity_rfvalue)
 shap_forest$Elevation_stdfvalue <- std1(shap_forest$Elevation_rfvalue)
 
-# Step 2: contribution calculation
 shap_forest$WTD_mean_value <- mean(abs(shap_forest$WTD), na.rm = TRUE)
 shap_forest$Aridity_mean_value <- mean(abs(shap_forest$Aridity), na.rm = TRUE)
 shap_forest$Elevation_mean_value <- mean(abs(shap_forest$Elevation), na.rm = TRUE)
@@ -50,12 +48,10 @@ shap_savannas_and_scrublands <- df_savannas_and_scrublands$dt %>%
          Aridity_rfvalue = ori_savannas_and_scrublands$Aridity,
          Elevation_rfvalue = ori_savannas_and_scrublands$Elevation)
 
-# Step 1: standardization
 shap_savannas_and_scrublands$WTD_stdfvalue <- std1(shap_savannas_and_scrublands$WTD_rfvalue)
 shap_savannas_and_scrublands$Aridity_stdfvalue <- std1(shap_savannas_and_scrublands$Aridity_rfvalue)
 shap_savannas_and_scrublands$Elevation_stdfvalue <- std1(shap_savannas_and_scrublands$Elevation_rfvalue)
 
-# Step 2: contribution calculation
 shap_savannas_and_scrublands$WTD_mean_value <- mean(abs(shap_savannas_and_scrublands$WTD), na.rm = TRUE)
 shap_savannas_and_scrublands$Aridity_mean_value <- mean(abs(shap_savannas_and_scrublands$Aridity), na.rm = TRUE)
 shap_savannas_and_scrublands$Elevation_mean_value <- mean(abs(shap_savannas_and_scrublands$Elevation), na.rm = TRUE)
@@ -78,12 +74,10 @@ shap_cropland <- df_cropland$dt %>%
          Aridity_rfvalue = ori_cropland$Aridity,
          Elevation_rfvalue = ori_cropland$Elevation)
 
-# Step 1: standardization
 shap_cropland$WTD_stdfvalue <- std1(shap_cropland$WTD_rfvalue)
 shap_cropland$Aridity_stdfvalue <- std1(shap_cropland$Aridity_rfvalue)
 shap_cropland$Elevation_stdfvalue <- std1(shap_cropland$Elevation_rfvalue)
 
-# Step 2: contribution calculation
 shap_cropland$WTD_mean_value <- mean(abs(shap_cropland$WTD), na.rm = TRUE)
 shap_cropland$Aridity_mean_value <- mean(abs(shap_cropland$Aridity), na.rm = TRUE)
 shap_cropland$Elevation_mean_value <- mean(abs(shap_cropland$Elevation), na.rm = TRUE)
@@ -106,12 +100,10 @@ shap_grassland <- df_grassland$dt %>%
          Aridity_rfvalue = ori_grassland$Aridity,
          Elevation_rfvalue = ori_grassland$Elevation)
 
-# Step 1: standardization
 shap_grassland$WTD_stdfvalue <- std1(shap_grassland$WTD_rfvalue)
 shap_grassland$Aridity_stdfvalue <- std1(shap_grassland$Aridity_rfvalue)
 shap_grassland$Elevation_stdfvalue <- std1(shap_grassland$Elevation_rfvalue)
 
-# Step 2: contribution calculation
 shap_grassland$WTD_mean_value <- mean(abs(shap_grassland$WTD), na.rm = TRUE)
 shap_grassland$Aridity_mean_value <- mean(abs(shap_grassland$Aridity), na.rm = TRUE)
 shap_grassland$Elevation_mean_value <- mean(abs(shap_grassland$Elevation), na.rm = TRUE)
@@ -137,7 +129,6 @@ common_theme <-  theme(legend.position = "bottom",
                        plot.margin = unit(c(5, 5, 5, 5), "points")
 )
 
-# function to extract legend from ggplot
 g_legend<-function(a.gplot){
   tmp <- ggplot_gtable(ggplot_build(a.gplot))
   leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
@@ -147,9 +138,10 @@ g_legend<-function(a.gplot){
 a1 <- ggplot(shap_forest, aes(Aridity_rfvalue, Aridity)) +
   geom_hline(yintercept = 0, color = "grey") +
   geom_point(aes(color = WTD_rfvalue), alpha = 0.35, size = 0.3) +
-  scale_color_gradient(low = "#1518FD", high = "#FE0104",
+  scale_color_viridis_c(option = "inferno", begin = 0.15,
                        limits = c(-150,0),  # Set the range for the legend
-                       breaks = seq(-150,0,by = 30)) +
+                       breaks = seq(-150,0,by = 30),
+                       guide = guide_colourbar(display = "raster", nbin = 512)) +
   labs(x = "",
        y = expression(paste("Shapley values for ", "λP/R"[n], " (", "-", ")   ")),
        color = "WTD (m)   ") +
@@ -166,7 +158,6 @@ a1 <- ggplot(shap_forest, aes(Aridity_rfvalue, Aridity)) +
         legend.key.height = unit(0.2, "cm")
   )
 
-# extract legend for final graph and remove from this panel
 mylegend <- arrangeGrob(g_legend(a1))
 a1 <- a1 + theme(legend.position="none")
 
@@ -185,13 +176,13 @@ a <- combined_plot <- plot_grid(
   rel_heights = c(0.2, 1)  # Adjust the relative height; 0.3 for density and 1 for scatter
 )
 
-#shap_savannas_and_scrublands
 b1 <- ggplot(shap_savannas_and_scrublands, aes(Aridity_rfvalue, Aridity)) +
   geom_hline(yintercept = 0, color = "grey") +
   geom_point(aes(color = WTD_rfvalue), alpha = 0.35, size = 0.3) +
-  scale_color_gradient(low = "#1518FD", high = "#FE0104",
+  scale_color_viridis_c(option = "inferno", begin = 0.15,
                        limits = c(-150, 0),  # Set the range for the legend
-                       breaks = seq(-150, 0, by = 30)) +
+                       breaks = seq(-150, 0, by = 30),
+                       guide = guide_colourbar(display = "raster", nbin = 512)) +
   scale_y_continuous(limits = c(-1.4, 1.9),
                      breaks = c(-1, -0.5, 0, 0.5, 1, 1.5)
   ) +
@@ -224,9 +215,10 @@ b <- combined_plot <- plot_grid(
 c1 <- ggplot(shap_cropland, aes(Aridity_rfvalue, Aridity)) +
   geom_hline(yintercept = 0, color = "grey") +
   geom_point(aes(color = WTD_rfvalue), alpha = 0.35, size = 0.3) +
-  scale_color_gradient(low = "#1518FD", high = "#FE0104",
+  scale_color_viridis_c(option = "inferno", begin = 0.15,
                        limits = c(-150, 0),  # Set the range for the legend
-                       breaks = seq(-150, 0, by = 30)) +
+                       breaks = seq(-150, 0, by = 30),
+                       guide = guide_colourbar(display = "raster", nbin = 512)) +
   labs(x = expression(paste("λP/R"[n], " (", "-", ")   ")),
        y = "\n", # spaceholder to have same x-axes lengths in all panels
        color = "WTD (m)") +
@@ -259,9 +251,10 @@ c <- combined_plot <- plot_grid(
 d1 <- ggplot(shap_grassland, aes(Aridity_rfvalue, Aridity)) +
   geom_hline(yintercept = 0, color = "grey") +
   geom_point(aes(color = WTD_rfvalue), alpha = 0.35, size = 0.3) +
-  scale_color_gradient(low = "#1518FD", high = "#FE0104",
+  scale_color_viridis_c(option = "inferno", begin = 0.15,
                        limits = c(-150, 0),  # Set the range for the legend
-                       breaks = seq(-150, 0, by = 30)) +
+                       breaks = seq(-150, 0, by = 30),
+                       guide = guide_colourbar(display = "raster", nbin = 512)) +
   scale_y_continuous(limits = c(-1.4, 1.9),
                      breaks = c(-1, -0.5, 0, 0.5, 1, 1.5)
   ) +
@@ -308,13 +301,10 @@ fig_ <- ggarrange(fig, mylegend,
 
 
 png(filename = paste0("./",
-                      "FigS_dependence_moisture.png"),
+                      "Supplementary Figure 2.png"),
     width = 9, height = 7, units = "in", res = 300)
 print(fig_)
 dev.off()
-
-
-
 
 
 

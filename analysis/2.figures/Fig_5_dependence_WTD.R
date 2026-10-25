@@ -20,15 +20,12 @@ ori_forest <- as.data.frame(df_forest$x_test)
 shap_forest <- df_forest$dt %>%
   mutate(WTD_rfvalue = ori_forest$WTD,
          Aridity_rfvalue = ori_forest$Aridity,
-         Elevation_rfvalue = ori_forest$Elevation) %>%
-  rename(Elevation = Elevation)
+         Elevation_rfvalue = ori_forest$Elevation)
 
-# Step 1: standardization
 shap_forest$WTD_stdfvalue <- std1(shap_forest$WTD_rfvalue)
 shap_forest$Aridity_stdfvalue <- std1(shap_forest$Aridity_rfvalue)
 shap_forest$Elevation_stdfvalue <- std1(shap_forest$Elevation_rfvalue)
 
-# Step 2: contribution calculation
 shap_forest$WTD_mean_value <- mean(abs(shap_forest$WTD), na.rm = TRUE)
 shap_forest$Aridity_mean_value <- mean(abs(shap_forest$Aridity), na.rm = TRUE)
 shap_forest$Elevation_mean_value <- mean(abs(shap_forest$Elevation), na.rm = TRUE)
@@ -49,15 +46,12 @@ ori_savannas_and_scrublands <- as.data.frame(df_savannas_and_scrublands$x_test)
 shap_savannas_and_scrublands <- df_savannas_and_scrublands$dt %>%
   mutate(WTD_rfvalue = ori_savannas_and_scrublands$WTD,
          Aridity_rfvalue = ori_savannas_and_scrublands$Aridity,
-         Elevation_rfvalue = ori_savannas_and_scrublands$Elevation) %>%
-  rename(Elevation = Elevation)
+         Elevation_rfvalue = ori_savannas_and_scrublands$Elevation)
 
-# Step 1: standardization
 shap_savannas_and_scrublands$WTD_stdfvalue <- std1(shap_savannas_and_scrublands$WTD_rfvalue)
 shap_savannas_and_scrublands$Aridity_stdfvalue <- std1(shap_savannas_and_scrublands$Aridity_rfvalue)
 shap_savannas_and_scrublands$Elevation_stdfvalue <- std1(shap_savannas_and_scrublands$Elevation_rfvalue)
 
-# Step 2: contribution calculation
 shap_savannas_and_scrublands$WTD_mean_value <- mean(abs(shap_savannas_and_scrublands$WTD), na.rm = TRUE)
 shap_savannas_and_scrublands$Aridity_mean_value <- mean(abs(shap_savannas_and_scrublands$Aridity), na.rm = TRUE)
 shap_savannas_and_scrublands$Elevation_mean_value <- mean(abs(shap_savannas_and_scrublands$Elevation), na.rm = TRUE)
@@ -78,15 +72,12 @@ ori_cropland <- as.data.frame(df_cropland$x_test)
 shap_cropland <- df_cropland$dt %>%
   mutate(WTD_rfvalue = ori_cropland$WTD,
          Aridity_rfvalue = ori_cropland$Aridity,
-         Elevation_rfvalue = ori_cropland$Elevation) %>%
-  rename(Elevation = Elevation)
+         Elevation_rfvalue = ori_cropland$Elevation)
 
-# Step 1: standardization
 shap_cropland$WTD_stdfvalue <- std1(shap_cropland$WTD_rfvalue)
 shap_cropland$Aridity_stdfvalue <- std1(shap_cropland$Aridity_rfvalue)
 shap_cropland$Elevation_stdfvalue <- std1(shap_cropland$Elevation_rfvalue)
 
-# Step 2: contribution calculation
 shap_cropland$WTD_mean_value <- mean(abs(shap_cropland$WTD), na.rm = TRUE)
 shap_cropland$Aridity_mean_value <- mean(abs(shap_cropland$Aridity), na.rm = TRUE)
 shap_cropland$Elevation_mean_value <- mean(abs(shap_cropland$Elevation), na.rm = TRUE)
@@ -107,15 +98,12 @@ ori_grassland <- as.data.frame(df_grassland$x_test)
 shap_grassland <- df_grassland$dt %>%
   mutate(WTD_rfvalue = ori_grassland$WTD,
          Aridity_rfvalue = ori_grassland$Aridity,
-         Elevation_rfvalue = ori_grassland$Elevation) %>%
-  rename(Elevation = Elevation)
+         Elevation_rfvalue = ori_grassland$Elevation)
 
-# Step 1: standardization
 shap_grassland$WTD_stdfvalue <- std1(shap_grassland$WTD_rfvalue)
 shap_grassland$Aridity_stdfvalue <- std1(shap_grassland$Aridity_rfvalue)
 shap_grassland$Elevation_stdfvalue <- std1(shap_grassland$Elevation_rfvalue)
 
-# Step 2: contribution calculation
 shap_grassland$WTD_mean_value <- mean(abs(shap_grassland$WTD), na.rm = TRUE)
 shap_grassland$Aridity_mean_value <- mean(abs(shap_grassland$Aridity), na.rm = TRUE)
 shap_grassland$Elevation_mean_value <- mean(abs(shap_grassland$Elevation), na.rm = TRUE)
@@ -152,9 +140,10 @@ g_legend<-function(a.gplot){
 a1 <- ggplot(shap_forest, aes(WTD_rfvalue, WTD)) +
   geom_hline(yintercept = 0, color = "grey") +
   geom_point(aes(color = Aridity_rfvalue), alpha = 0.35, size = 0.3) +
-  scale_color_gradient(low = "#1518FD", high = "#FE0104",
+  scale_color_viridis_c(option = "inferno", begin = 0.15,
                        limits = c(0, 1.8),  # Set the range for the legend
-                       breaks = seq(0, 1.8, by = 0.3)) +
+                       breaks = seq(0, 1.8, by = 0.3),
+                       guide = guide_colourbar(display = "gradient")) +
   labs(x = "",
        y = expression(atop('Shapley values for', 'WTD (sr'^-1 * 'nm'^-1 * ")")),
        color = expression(paste("λP/R"[n], " (", "-", ")   ")),
@@ -176,6 +165,9 @@ a1 <- ggplot(shap_forest, aes(WTD_rfvalue, WTD)) +
 
 # extract legend for final graph and remove from this panel
 mylegend<-arrangeGrob(g_legend(a1))
+mylegend_png <- arrangeGrob(g_legend(
+  a1 + guides(color = guide_colourbar(display = "raster", nbin = 512))
+))
 a1 <- a1 + theme(legend.position="none")
 
 
@@ -198,9 +190,10 @@ a <- combined_plot <- plot_grid(
 b1 <- ggplot(shap_savannas_and_scrublands, aes(WTD_rfvalue, WTD)) +
   geom_hline(yintercept = 0, color = "grey") +
   geom_point(aes(color = Aridity_rfvalue), alpha = 0.35, size = 0.3) +
-  scale_color_gradient(low = "#1518FD", high = "#FE0104",
+  scale_color_viridis_c(option = "inferno", begin = 0.15,
                        limits = c(0, 1.8),  # Set the range for the legend
-                       breaks = seq(0, 1.8, by = 0.3)) +
+                       breaks = seq(0, 1.8, by = 0.3),
+                       guide = guide_colourbar(display = "gradient")) +
   scale_x_continuous(name = element_blank(),
                      limits = c(-153, 0),
                      breaks = c(-200, -175, -150, -125, -100, -75, -50, -25, 0),
@@ -238,9 +231,10 @@ b <- combined_plot <- plot_grid(
 c1 <- ggplot(shap_grassland, aes(WTD_rfvalue, WTD)) +
   geom_hline(yintercept = 0, color = "grey") +
   geom_point(aes(color = Aridity_rfvalue), alpha = 0.35, size = 0.3) +
-  scale_color_gradient(low = "#1518FD", high = "#FE0104",
+  scale_color_viridis_c(option = "inferno", begin = 0.15,
                        limits = c(0, 1.8),  # Set the range for the legend
-                       breaks = seq(0, 1.8, by = 0.3)) +
+                       breaks = seq(0, 1.8, by = 0.3),
+                       guide = guide_colourbar(display = "gradient")) +
   scale_x_continuous(limits = c(-153, 0),
                      breaks = c(-200, -175, -150, -125, -100, -75, -50, -25, 0),
                      expand = c(0, 0) # remove space below zero
@@ -276,9 +270,10 @@ c <- combined_plot <- plot_grid(
 d1 <- ggplot(shap_cropland, aes(WTD_rfvalue, WTD)) +
   geom_hline(yintercept = 0, color = "grey") +
   geom_point(aes(color = Aridity_rfvalue), alpha = 0.35, size = 0.3) +
-  scale_color_gradient(low = "#1518FD", high = "#FE0104",
+  scale_color_viridis_c(option = "inferno", begin = 0.15,
                        limits = c(0, 1.8),  # Set the range for the legend
-                       breaks = seq(0, 1.8, by = 0.3)) +
+                       breaks = seq(0, 1.8, by = 0.3),
+                       guide = guide_colourbar(display = "gradient")) +
   scale_x_continuous(limits = c(-153, 0),
                      breaks = c(-200, -175, -150, -125, -100, -75, -50, -25, 0),
                      expand = c(0, 0) # remove space below zero
@@ -317,7 +312,7 @@ fig <- ggarrange(a, b, c, d,
                  labels = "auto",
                  ncol = 2, nrow = 2,
                  align = "hv",
-                 common.legend = TRUE,  # Share a common legend
+                 common.legend = TRUE,
                  legend = "bottom"      # Position legend at the bottom
 )
 
@@ -328,13 +323,14 @@ fig_ <- ggarrange(fig, mylegend,
                  heights = c(8,1)
 )
 
-png(filename = paste0("./",
-                      "Fig_5.png"),
-    width = 9, height = 7, units = "in", res = 300)
+grDevices::cairo_pdf(filename = "Figure 5.pdf",
+                     width = 9, height = 7, bg = "white")
 print(fig_)
 dev.off()
 
-
-
-
-
+fig_png <- ggarrange(fig, mylegend_png,
+                     ncol = 1, nrow = 2,
+                     align = "hv",
+                     heights = c(8, 1))
+ggsave("Figure 5.png", plot = fig_png, path = "./",
+       width = 9, height = 7, units = "in", dpi = 600, bg = "white")
