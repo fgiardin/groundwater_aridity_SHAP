@@ -4,11 +4,9 @@
 
 Francesco Giardina, Jiangong Liu, Sonia I. Seneviratne, Benjamin D. Stocker, and Pierre Gentine
 
-This repository provides the code and intermediary data used in the published study. The article is available in *Communications Earth & Environment*: [https://www.nature.com/articles/s43247-026-04067-w](https://www.nature.com/articles/s43247-026-04067-w) ([doi:10.1038/s43247-026-04067-w](https://doi.org/10.1038/s43247-026-04067-w)).
+This repository provides the code and intermediary data used in the article available in *Communications Earth & Environment*: [https://www.nature.com/articles/s43247-026-04067-w](https://www.nature.com/articles/s43247-026-04067-w) ([doi:10.1038/s43247-026-04067-w](https://doi.org/10.1038/s43247-026-04067-w)).
 
-> Giardina, F., Liu, J., Seneviratne, S. I., Stocker, B. D., and Gentine, P. (2026). Groundwater regulates the spatial pattern of photosynthesis in the contiguous United States. *Communications Earth & Environment*. [https://doi.org/10.1038/s43247-026-04067-w](https://doi.org/10.1038/s43247-026-04067-w)
-
-All code is licensed under AGPL-v3, and the manuscript and data are licensed as CC-BY. Please review the individual directories and their LICENSE file for more information. The code can be cited as follows:
+All code is licensed under AGPL-v3, and the manuscript and data are licensed as CC-BY. Please review the individual directories and their LICENSE file for more information. The repository can be cited as follows:
 
 > Giardina et al. (2026). Groundwater regulates the spatial pattern of photosynthesis in the contiguous United States: code and intermediary data. [https://doi.org/10.5281/zenodo.10498084](https://doi.org/10.5281/zenodo.10498084)
 
@@ -24,7 +22,7 @@ git clone https://github.com/fgiardin/groundwater_aridity_SHAP.git
 
 Run the scripts from the repository root. The main analysis is in `analysis/1.calculate_Causal_Shapley.R`; figure scripts are in `analysis/2.figures` and `analysis/3.supplementary`. The high-resolution analysis is in `data-raw/high_res`. Figure scripts write their output to the repository root.
 
-Raw input files that are too large for GitHub are not included. Their sources are documented in the article's Data availability section and in the corresponding processing scripts.
+Raw input files that are too large for GitHub are not included. Their sources are documented in the Data availability section of the article and in the corresponding processing scripts.
 
 ## Repository structure
 
